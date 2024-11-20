@@ -52,7 +52,7 @@ class Budget::Stats
   def total_participants_vote_phase
     (balloters + poll_ballot_voters).uniq.count + total_physical_balloters
   end
-  
+
   def total_physical_balloters
     budget.ballots.where(physical: true).count
   end
