@@ -3,39 +3,27 @@ class Admin::MenuComponent < ApplicationComponent
   use_helpers :can?
 
   def links
-    if Rails.application.multitenancy_management_mode?
-      multitenancy_management_links
-    else
-      default_links
-    end
+    [
+      (proposals_link if feature?(:proposals)),
+      (debates_link if feature?(:debates)),
+      comments_link,
+      (polls_link if feature?(:polls)),
+      (legislation_link if feature?(:legislation)),
+      (budgets_link if feature?(:budgets)),
+      booths_links,
+      (signature_sheets_link if feature?(:signature_sheets)),
+      messages_links,
+      site_customization_links,
+      moderated_content_links,
+      profiles_links,
+      stats_link,
+      settings_links,
+      dashboard_links,
+      (machine_learning_link if ::MachineLearning.enabled?)
+    ]
   end
 
   private
-
-    def default_links
-      [
-        (proposals_link if feature?(:proposals)),
-        (debates_link if feature?(:debates)),
-        comments_link,
-        (polls_link if feature?(:polls)),
-        (legislation_link if feature?(:legislation)),
-        (budgets_link if feature?(:budgets)),
-        booths_links,
-        (signature_sheets_link if feature?(:signature_sheets)),
-        messages_links,
-        site_customization_links,
-        moderated_content_links,
-        profiles_links,
-        stats_link,
-        settings_links,
-        dashboard_links,
-        (machine_learning_link if ::MachineLearning.enabled?)
-      ]
-    end
-
-    def multitenancy_management_links
-      [tenants_link, administrators_link]
-    end
 
     def moderated_content?
       moderated_sections.include?(controller_name) && controller.class.module_parent != Admin::Legislation
@@ -51,8 +39,8 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def polls?
-      controller.class.module_parent == Admin::Poll::Questions::Options ||
-        %w[polls active_polls recounts results questions options].include?(controller_name) &&
+      controller.class.module_parent == Admin::Poll::Questions::Answers ||
+        %w[polls active_polls recounts results questions answers].include?(controller_name) &&
           action_name != "booth_assignments"
     end
 
@@ -66,15 +54,13 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def settings?
-      controllers_names = %w[settings tenants tags locales geozones local_census_records imports]
+      controllers_names = ["settings", "tenants", "tags", "geozones", "local_census_records", "imports"]
       controllers_names.include?(controller_name)
     end
 
     def customization?
       controllers_names = ["pages", "banners", "information_texts", "documents", "images", "content_blocks"]
-
-      (controllers_names.include?(controller_name) || homepage? || pages?) &&
-        controller.class.module_parent != Admin::Poll::Questions::Options
+      controllers_names.include?(controller_name) || homepage? || pages?
     end
 
     def homepage?
@@ -165,15 +151,14 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def booths_links
-      section(t("admin.menu.title_booths"), active: booths?, class: "booths-link") do
+      link_to(t("admin.menu.title_booths"), "#", class: "booths-link") +
         link_list(
           officers_link,
           booths_link,
           booth_assignments_link,
           shifts_link,
-          id: "booths_menu"
+          id: "booths_menu", class: ("is-active" if booths?)
         )
-      end
     end
 
     def officers_link
@@ -219,15 +204,14 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def messages_links
-      section(t("admin.menu.messaging_users"), active: messages_menu_active?, class: "messages-link") do
+      link_to(t("admin.menu.messaging_users"), "#", class: "messages-link") +
         link_list(
           newsletters_link,
           admin_notifications_link,
           system_emails_link,
           emails_download_link,
-          id: "messaging_users_menu"
+          id: "messaging_users_menu", class: ("is-active" if messages_menu_active?)
         )
-      end
     end
 
     def newsletters_link
@@ -263,8 +247,7 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def site_customization_links
-      section(t("admin.menu.title_site_customization"),
-              active: customization?, class: "site-customization-link") do
+      link_to(t("admin.menu.title_site_customization"), "#", class: "site-customization-link") +
         link_list(
           homepage_link,
           pages_link,
@@ -272,9 +255,10 @@ class Admin::MenuComponent < ApplicationComponent
           information_texts_link,
           documents_link,
           images_link,
-          content_blocks_link
+          content_blocks_link,
+          class: ("is-active" if customization? &&
+                                 controller.class.module_parent != Admin::Poll::Questions::Answers)
         )
-      end
     end
 
     def homepage_link
@@ -318,8 +302,7 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def moderated_content_links
-      section(t("admin.menu.title_moderated_content"),
-              active: moderated_content?, class: "moderated-content-link") do
+      link_to(t("admin.menu.title_moderated_content"), "#", class: "moderated-content-link") +
         link_list(
           (hidden_proposals_link if feature?(:proposals)),
           (hidden_debates_link if feature?(:debates)),
@@ -327,9 +310,9 @@ class Admin::MenuComponent < ApplicationComponent
           hidden_comments_link,
           hidden_proposal_notifications_link,
           hidden_users_link,
-          activity_link
+          activity_link,
+          class: ("is-active" if moderated_content?)
         )
-      end
     end
 
     def hidden_proposals_link
@@ -389,7 +372,7 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def profiles_links
-      section(t("admin.menu.title_profiles"), active: profiles?, class: "profiles-link") do
+      link_to(t("admin.menu.title_profiles"), "#", class: "profiles-link") +
         link_list(
           administrators_link,
           organizations_link,
@@ -398,17 +381,16 @@ class Admin::MenuComponent < ApplicationComponent
           valuators_link,
           managers_link,
           (sdg_managers_link if feature?(:sdg)),
-          users_link
+          users_link,
+          class: ("is-active" if profiles?)
         )
-      end
     end
 
     def administrators_link
       [
         t("admin.menu.administrators"),
         admin_administrators_path,
-        controller_name == "administrators",
-        class: "administrators-link"
+        controller_name == "administrators"
       ]
     end
 
@@ -470,19 +452,15 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def settings_links
-      section(t("admin.menu.title_settings"), active: settings?, class: "settings-link") do
+      link_to(t("admin.menu.title_settings"), "#", class: "settings-link") +
         link_list(
           settings_link,
           tenants_link,
           tags_link,
-          (locales_link if I18n.available_locales.many?),
           geozones_link,
-          postcodes_link,
           local_census_records_link,
           class: ("is-active" if settings?)
-
         )
-      end
     end
 
     def settings_link
@@ -498,8 +476,7 @@ class Admin::MenuComponent < ApplicationComponent
         [
           t("admin.menu.multitenancy"),
           admin_tenants_path,
-          controller_name == "tenants",
-          class: "tenants-link"
+          controller_name == "tenants"
         ]
       end
     end
@@ -512,14 +489,6 @@ class Admin::MenuComponent < ApplicationComponent
       ]
     end
 
-    def locales_link
-      [
-        t("admin.menu.locales"),
-        admin_locales_path,
-        controller_name == "locales"
-      ]
-    end
-
     def geozones_link
       [
         t("admin.menu.geozones"),
@@ -527,20 +496,12 @@ class Admin::MenuComponent < ApplicationComponent
         controller_name == "geozones"
       ]
     end
-    
-    def postcodes_link
-      [
-        t("admin.menu.postcodes"),
-        admin_postcodes_path,
-        controller_name == "postcodes"
-      ]
-    end
 
     def images_link
       [
         t("admin.menu.site_customization.images"),
         admin_site_customization_images_path,
-        controller_name == "images" && controller.class.module_parent != Admin::Poll::Questions::Options
+        controller_name == "images" && controller.class.module_parent != Admin::Poll::Questions::Answers
       ]
     end
 
@@ -561,12 +522,12 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def dashboard_links
-      section(t("admin.menu.dashboard"), active: dashboard?, class: "dashboard-link") do
+      link_to(t("admin.menu.dashboard"), "#", class: "dashboard-link") +
         link_list(
           dashboard_actions_link,
-          administrator_tasks_link
+          administrator_tasks_link,
+          class: ("is-active" if dashboard?)
         )
-      end
     end
 
     def machine_learning_link
@@ -600,13 +561,5 @@ class Admin::MenuComponent < ApplicationComponent
         admin_sdg_managers_path,
         sdg_managers?
       ]
-    end
-
-    def section(title, **, &content)
-      section_opener(title, **) + content.call
-    end
-
-    def section_opener(title, active:, **options)
-      button_tag(title, { type: "button", disabled: "disabled", "aria-expanded": active }.merge(options))
     end
 end

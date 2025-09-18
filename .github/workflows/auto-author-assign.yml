@@ -11,6 +11,6 @@ jobs:
   assign-author:
     name: Auto-assign pull request author
     if: github.repository_owner == 'consuldemocracy'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: toshimaru/auto-author-assign@v2.1.1
+      - uses: toshimaru/auto-author-assign@v1.4.0

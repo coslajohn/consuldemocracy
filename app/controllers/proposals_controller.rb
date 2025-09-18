@@ -8,15 +8,13 @@ class ProposalsController < ApplicationController
   include Translatable
 
   before_action :load_categories, only: [:index, :map, :summary]
-  before_action :load_geozones #, only: [:edit, :map, :summary]
+  before_action :load_geozones, only: [:edit, :map, :summary]
   before_action :authenticate_user!, except: [:index, :show, :map, :summary]
   before_action :set_view, only: :index
   before_action :proposals_recommendations, only: :index, if: :current_user
 
   feature_flag :proposals
-  
-  helper_method :geozones_data
-  
+
   invisible_captcha only: [:create, :update], honeypot: :subtitle
 
   has_orders ->(c) { Proposal.proposals_orders(c.current_user) }, only: :index
@@ -27,7 +25,6 @@ class ProposalsController < ApplicationController
 
   helper_method :resource_model, :resource_name
   respond_to :html, :js
-
 
   def show
     super
@@ -79,18 +76,7 @@ class ProposalsController < ApplicationController
     @proposals = Proposal.for_summary
     @tag_cloud = tag_cloud
   end
-  
-  def geozones_data
-      @geozones.map do |geozone|
-        {
-          outline_points: geozone.outline_points,
-          color: geozone.color,
-          headings: [view_context.link_to(geozone.name, proposals_path(search: geozone.name))]
-        }
-      end
-    end
 
-  
   def map
     @proposal = Proposal.new
     @tag_cloud = tag_cloud
@@ -117,7 +103,7 @@ class ProposalsController < ApplicationController
 
     def allowed_params
       attributes = [:video_url, :responsible_name, :tag_list, :terms_of_service,
-                    :geozone_id, :related_sdg_list, :price,
+                    :geozone_id, :related_sdg_list,
                     image_attributes: image_attributes,
                     documents_attributes: document_attributes,
                     map_location_attributes: map_location_attributes]
@@ -178,7 +164,7 @@ class ProposalsController < ApplicationController
                                       .sort_by_confidence_score
                                       .limit(Setting["featured_proposals_number"])
         if @featured_proposals.present?
-          @resources = @resources.excluding(@featured_proposals)
+          @resources = @resources.where.not(id: @featured_proposals)
         end
       end
     end

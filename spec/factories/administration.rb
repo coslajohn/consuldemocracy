@@ -20,15 +20,7 @@ FactoryBot.define do
 
     trait :with_geojson do
       geojson do
-        <<~JSON
-          {
-            "type": "Feature",
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [[[0.117, 51.513], [0.118, 51.512], [0.119, 51.514], [0.117, 51.513]]]
-            }
-          }
-        JSON
+        '{ "geometry": { "type": "Polygon", "coordinates": [[0.117,51.513],[0.118,51.512],[0.119,51.514]] } }'
       end
     end
   end

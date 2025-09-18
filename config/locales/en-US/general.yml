@@ -28,6 +28,10 @@ en-US:
   polls:
     show:
       comments_tab: Kommentare
+  stats:
+    index:
+      debates: Debatten
+      comments: Kommentare
   users:
     show:
       debates: Debatten

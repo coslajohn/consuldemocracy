@@ -18,7 +18,6 @@ es:
           reseted: Contraseña restablecida correctamente
           random: Generar contraseña aleatoria
           save: Guardar contraseña
-          show: Mostrar contraseña
           print: Imprimir contraseña
           print_help: Podrás imprimir la contraseña cuando se haya guardado.
     account_info:
@@ -96,8 +95,6 @@ es:
         unfeasible: Proyectos no factibles
       print:
         print_button: Imprimir
-      search:
-        label: "Buscar proyectos"
       search_results:
         one: " que contiene '%{search_term}'"
         other: " que contienen '%{search_term}'"

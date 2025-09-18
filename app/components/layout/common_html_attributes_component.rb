@@ -1,22 +1,21 @@
-class Layout::CommonHtmlAttributesComponent < ApplicationComponent
+class Layout::CommonHTMLAttributesComponent < ApplicationComponent
   use_helpers :rtl?
 
   private
 
     def attributes
-      tag.attributes(dir: dir, lang: lang, class: html_class)
+      sanitize([dir, lang, html_class].compact.join(" "))
     end
 
     def dir
-      "rtl" if rtl?
+      'dir="rtl"' if rtl?
     end
 
     def lang
-      I18n.locale
+      "lang=\"#{I18n.locale}\""
     end
 
     def html_class
-#        "class=\"tenant-#{Tenant.current_schema}\"" if Rails.application.config.multitenancy
-      "tenant-#{Tenant.current_schema}" if Rails.application.config.multitenancy
+      "class=\"tenant-#{Tenant.current_schema}\"" if Rails.application.config.multitenancy
     end
 end

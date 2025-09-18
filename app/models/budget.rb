@@ -1,6 +1,7 @@
 class Budget < ApplicationRecord
   include Measurable
   include Sluggable
+  include StatsVersionable
   include Reportable
   include Imageable
 
@@ -47,7 +48,7 @@ class Budget < ApplicationRecord
   accepts_nested_attributes_for :phases
 
   scope :published, -> { where(published: true) }
-  scope :drafting,  -> { excluding(published) }
+  scope :drafting,  -> { where.not(id: published) }
   scope :informing, -> { where(phase: "informing") }
   scope :accepting, -> { where(phase: "accepting") }
   scope :reviewing, -> { where(phase: "reviewing") }
@@ -58,7 +59,6 @@ class Budget < ApplicationRecord
   scope :balloting, -> { where(phase: "balloting") }
   scope :reviewing_ballots, -> { where(phase: "reviewing_ballots") }
   scope :finished, -> { where(phase: "finished") }
-  scope :public_for_api, -> { published }
 
   class << self; undef :open; end
   scope :open, -> { where.not(phase: "finished") }
@@ -200,12 +200,10 @@ class Budget < ApplicationRecord
   def investments_filters
     [
       ("winners" if finished?),
-      ("unsuccessful" if finished?),
       ("selected" if publishing_prices_or_later? && !finished?),
       ("unselected" if publishing_prices_or_later?),
       ("not_unfeasible" if valuating?),
-      ("unfeasible" if valuating_or_later?),
-      ("everything")
+      ("unfeasible" if valuating_or_later?)
     ].compact
   end
 

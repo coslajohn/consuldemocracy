@@ -111,8 +111,6 @@ gl:
       title: "Resumo"
       votes:
         zero: "%{count} votos"
-        one: "%{count} voto"
-        other: "%{count} votos"
       debate_phase: "Fase previa"
       proposals_phase: "Fase de propostas"
       allegations_phase: "Fase de alegaciones"
@@ -124,11 +122,5 @@ gl:
         zero: "Sen propostas"
         one: "%{count} proposta"
         other: "%{count} propostas"
-      download: "Descargar resumo"
       top_comments:
         zero: "Ningún comentario"
-        one: "%{count} comentario"
-        other: "Mellores comentarios"
-      most_voted_comments: "Comentarios máis votados"
-      no_allegation: "Non hai comentarios"
-      process_empty: "Este proceso non tivo fases de participación"

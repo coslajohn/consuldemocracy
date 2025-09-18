@@ -11,18 +11,18 @@ describe "Admin collaborative legislation", :admin do
         expect(page).to have_content(proposal.title)
         expect(page).to have_content(proposal.id)
         expect(page).to have_content(proposal.cached_votes_score)
-        expect(page).to have_content("No")
+        expect(page).to have_content("Select")
       end
     end
 
     scenario "Selecting legislation proposals" do
-      proposal = create(:legislation_proposal, title: "Add more accessibility tests")
+      proposal = create(:legislation_proposal, cached_votes_score: 10)
 
       visit admin_legislation_process_proposals_path(proposal.legislation_process_id)
-      click_button "Select Add more accessibility tests"
+      click_link "Select"
 
       within "#legislation_proposal_#{proposal.id}" do
-        expect(page).to have_content "Yes"
+        expect(page).to have_content("Selected")
       end
     end
 

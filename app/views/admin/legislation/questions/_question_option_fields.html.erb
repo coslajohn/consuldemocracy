@@ -3,7 +3,8 @@
     <div class="small-12 medium-9 column">
       <%= f.translatable_fields do |translations_form| %>
         <%= translations_form.text_field :value,
-                                         label: t("admin.legislation.questions.form.value_placeholder") %>
+                                         placeholder: t("admin.legislation.questions.form.value_placeholder"),
+                                         label: false %>
       <% end %>
     </div>
 

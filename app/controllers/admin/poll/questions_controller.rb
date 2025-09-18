@@ -4,7 +4,14 @@ class Admin::Poll::QuestionsController < Admin::Poll::BaseController
 
   load_and_authorize_resource :poll
   load_resource class: "Poll::Question"
-  authorize_resource except: :new
+  authorize_resource except: [:new, :index]
+
+  def index
+    @polls = Poll.not_budget
+    @questions = @questions.search(search_params).page(params[:page]).order("created_at DESC")
+
+    @proposals = Proposal.successful.sort_by_confidence_score
+  end
 
   def new
     proposal = Proposal.find(params[:proposal_id]) if params[:proposal_id].present?
@@ -53,5 +60,9 @@ class Admin::Poll::QuestionsController < Admin::Poll::BaseController
     def allowed_params
       attributes = [:poll_id, :question, :proposal_id, votation_type_attributes: [:vote_type, :max_votes]]
       [*attributes, translation_params(Poll::Question)]
+    end
+
+    def search_params
+      params.permit(:poll_id, :search)
     end
 end

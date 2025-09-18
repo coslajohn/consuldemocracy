@@ -144,7 +144,7 @@ describe "Admin budget groups", :admin do
 
       visit edit_admin_budget_group_path(budget, group)
 
-      select "Español", from: "Add language"
+      select "Español", from: :add_language
       fill_in "Group name", with: "Spanish name"
       click_button "Save group"
 
@@ -156,7 +156,7 @@ describe "Admin budget groups", :admin do
 
       visit edit_admin_budget_group_path(budget, group)
 
-      select "English", from: "Current language"
+      select "English", from: :select_language
       fill_in "Group name", with: "New English Name"
       click_button "Save group"
 

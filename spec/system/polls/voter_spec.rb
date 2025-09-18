@@ -20,14 +20,14 @@ describe "Voter" do
       login_as user
       visit poll_path(poll)
 
-      within("#poll_question_#{question.id}_options") do
+      within("#poll_question_#{question.id}_answers") do
         click_button "Vote Yes"
 
         expect(page).to have_button("You have voted Yes")
         expect(page).not_to have_button("Vote Yes")
       end
 
-      refresh
+      visit poll_path(poll)
 
       expect(page).to have_content("You have already participated in this poll.")
       expect(page).to have_content("If you vote again it will be overwritten")
@@ -44,14 +44,14 @@ describe "Voter" do
       expect(page).to have_content("You have already participated in this poll.")
       expect(page).to have_content("If you vote again it will be overwritten")
 
-      within("#poll_question_#{question.id}_options") do
+      within("#poll_question_#{question.id}_answers") do
         click_button "You have voted Yes"
 
         expect(page).to have_button("Vote Yes")
         expect(page).to have_button("Vote No")
       end
 
-      refresh
+      visit poll_path(poll)
 
       expect(page).not_to have_content("You have already participated in this poll.")
       expect(page).not_to have_content("If you vote again it will be overwritten")
@@ -63,7 +63,7 @@ describe "Voter" do
       login_as user
       visit poll_path(poll)
 
-      within("#poll_question_#{question.id}_options") do
+      within("#poll_question_#{question.id}_answers") do
         expect(page).to have_link("Yes", href: verification_path)
         expect(page).to have_link("No", href: verification_path)
       end
@@ -74,8 +74,7 @@ describe "Voter" do
     end
 
     scenario "Voting in booth" do
-      admin_user = admin.user
-      login_through_form_as_officer(officer)
+      login_through_form_as_officer(officer.user)
 
       visit new_officing_residence_path
       officing_verify_residence
@@ -88,8 +87,12 @@ describe "Voter" do
         expect(page).to have_content("Vote introduced!")
       end
 
-      logout
-      login_as(admin_user)
+      expect(Poll::Voter.count).to eq(1)
+      expect(Poll::Voter.first.origin).to eq("booth")
+
+      visit root_path
+      click_link "Sign out"
+      login_as(admin.user)
       visit admin_poll_recounts_path(poll)
 
       within("#total_system") do
@@ -105,7 +108,7 @@ describe "Voter" do
       before { create(:user, :in_census) }
 
       scenario "Show not to vote at this time button" do
-        login_through_form_as_officer(officer)
+        login_through_form_as_officer(officer.user)
 
         visit new_officing_residence_path
         officing_verify_residence
@@ -117,7 +120,7 @@ describe "Voter" do
       end
 
       scenario "Hides not to vote at this time button if already voted" do
-        login_through_form_as_officer(officer)
+        login_through_form_as_officer(officer.user)
 
         visit new_officing_residence_path
         officing_verify_residence
@@ -143,9 +146,11 @@ describe "Voter" do
       scenario "Trying to vote in web and then in booth" do
         login_as user
         vote_for_poll_via_web(poll, question, "Yes")
+        expect(Poll::Voter.count).to eq(1)
 
-        logout
-        login_through_form_as_officer(officer)
+        click_link "Sign out"
+
+        login_through_form_as_officer(officer.user)
 
         visit new_officing_residence_path
         officing_verify_residence
@@ -156,23 +161,26 @@ describe "Voter" do
       end
 
       scenario "Trying to vote in booth and then in web" do
-        admin_user = admin.user
-        login_through_form_as_officer(officer)
+        login_through_form_as_officer(officer.user)
 
         vote_for_poll_via_booth
 
-        logout
+        visit root_path
+        click_link "Sign out"
+
         login_as user
         visit poll_path(poll)
 
-        within("#poll_question_#{question.id}_options") do
+        within("#poll_question_#{question.id}_answers") do
           expect(page).not_to have_button("Yes")
         end
         expect(page).to have_content "You have already participated in a physical booth. " \
                                      "You can not participate again."
+        expect(Poll::Voter.count).to eq(1)
 
-        logout
-        login_as(admin_user)
+        visit root_path
+        click_link "Sign out"
+        login_as(admin.user)
         visit admin_poll_recounts_path(poll)
 
         within("#total_system") do
@@ -186,32 +194,34 @@ describe "Voter" do
     end
 
     scenario "Voting in poll and then verifiying account" do
-      allow_any_instance_of(Verification::Sms).to receive(:generate_confirmation_code).and_return("1357")
       user = create(:user)
-      admin_user = admin.user
 
-      login_through_form_as_officer(officer)
+      login_through_form_as_officer(officer.user)
       vote_for_poll_via_booth
 
-      logout
+      visit root_path
+      click_link "Sign out"
+
       login_as user
       visit account_path
       click_link "Verify my account"
 
       verify_residence
-      confirm_phone(code: "1357")
+      confirm_phone(user)
 
       visit poll_path(poll)
 
-      within("#poll_question_#{question.id}_options") do
+      within("#poll_question_#{question.id}_answers") do
         expect(page).not_to have_button("Yes")
       end
 
       expect(page).to have_content "You have already participated in a physical booth. " \
                                    "You can not participate again."
+      expect(Poll::Voter.count).to eq(1)
 
-      logout
-      login_as(admin_user)
+      visit root_path
+      click_link "Sign out"
+      login_as(admin.user)
       visit admin_poll_recounts_path(poll)
 
       within("#total_system") do
@@ -225,7 +235,7 @@ describe "Voter" do
 
     context "Side menu" do
       scenario "'Validate document' menu item with votable polls" do
-        login_through_form_as_officer(officer)
+        login_through_form_as_officer(officer.user)
 
         visit new_officing_residence_path
         officing_verify_residence
@@ -249,7 +259,7 @@ describe "Voter" do
       scenario "'Validate document' menu item without votable polls" do
         create(:poll_voter, poll: poll, user: create(:user, :in_census))
 
-        login_through_form_as_officer(officer)
+        login_through_form_as_officer(officer.user)
 
         visit new_officing_residence_path
         officing_verify_residence

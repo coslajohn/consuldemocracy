@@ -1,8 +1,17 @@
 module Verifications
+  def select_date(values, selector)
+    selector = selector[:from]
+    day, month, year = values.split("-")
+    select day,   from: "#{selector}_3i"
+    select month, from: "#{selector}_2i"
+    select year,  from: "#{selector}_1i"
+  end
+
   def verify_residence
     select "DNI", from: "residence_document_type"
     fill_in "residence_document_number", with: "12345678Z"
-    fill_in "residence_date_of_birth", with: Date.new(1980, 12, 31)
+    select_date "31-#{I18n.l(Date.current.at_end_of_year, format: "%B")}-1980",
+                from: "residence_date_of_birth"
 
     fill_in "residence_postal_code", with: "28013"
     check "residence_terms_of_service"
@@ -11,9 +20,9 @@ module Verifications
     expect(page).to have_content I18n.t("verification.residence.create.flash.success")
   end
 
-  def officing_verify_residence(document_number: "12345678Z")
+  def officing_verify_residence
     select "DNI", from: "residence_document_type"
-    fill_in "residence_document_number", with: document_number
+    fill_in "residence_document_number", with: "12345678Z"
     fill_in "residence_year_of_birth", with: "1980"
 
     click_button "Validate document"

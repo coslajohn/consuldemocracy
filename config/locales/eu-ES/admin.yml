@@ -106,6 +106,7 @@ eu:
         valuator_filter_all: Ebaluatzaile guztiak
         tags_filter_all: Etiketa guztiak
         advanced_filters: Iragazki aurreratuak
+        placeholder: Proiektuak bilatu
         filters:
           all: Guztiak
           without_admin: Administratzaile gabe
@@ -130,6 +131,7 @@ eu:
           unfeasible: "Bideraezina"
           undecided: "Erabaki gabe"
         selected: "Aukeratuta"
+        select: "Aukeratu"
         list:
           id: ID
           title: Izenburua
@@ -385,6 +387,7 @@ eu:
         index:
           title: Zirriborroaren bertsioak
           create: Bertsioa sortu
+          delete: Ezabatu
           preview: Aurreikusi
         new:
           back: Itzuli
@@ -417,6 +420,7 @@ eu:
           back: Itzuli
           title: Prosezu honi esleitutako galderak
           create: Galdera sortu
+          delete: Ezabatu
         new:
           back: Itzuli
           title: Galder berria sortu
@@ -725,11 +729,17 @@ eu:
         table_title: "Izenburua"
     questions:
       index:
+        title: "Galderak"
         create: "Herri galdera sortu"
+        no_questions: "Ez dago herri galderarik."
+        filter_poll: Bozkaketaz iragazi
         select_poll: Bozkaketa aukeratu
+        questions_tab: "Galderak"
         successful_proposals_tab: "Atalasea gainditu duten proposamenak"
         create_question: "Galdera bat sortu bozkaketarako"
         table_proposal: "Proposamena"
+        table_question: "Galdera"
+        table_poll: "Bozkaketa"
       edit:
         title: "Herri galdera editatu"
       new:
@@ -745,6 +755,7 @@ eu:
         edit_question: Galdera editatu
         valid_answers: Erantzun onargarriak
         add_answer: Erantzuna gehitu
+        video_url: Kanpo bideoa
         answers:
           title: Erantzuna
           description: Deskribapena
@@ -863,6 +874,7 @@ eu:
         title: Ezkutatutako proposamenak
         id: ID
         author: Sortzailea
+        select: Aukeratu
         selected: Hautatutakoak
         milestones: Jarraipena
     hidden_proposals:
@@ -986,6 +998,7 @@ eu:
           verified_users_who_didnt_vote_proposals: Proposamenak bozkatu ez duten egiaztatutako erabiltzaileak
           visits: Bisitak
           votes: Bozkak
+        budgets_title: Partaidetzazko aurrekontuak
         participatory_budgets: Partaidetzazko aurrekontuak
         direct_messages: Mezu zuzenak
         proposal_notifications: Proposamen jakinarazpenak
@@ -993,6 +1006,7 @@ eu:
         polls: Bozkaketak
       graph:
         debate_created: Eztabaidak
+        visit: Bisita
         proposal_created: Herri proposamenak
       budget_balloting:
         vote_count: Bozkak
@@ -1077,6 +1091,7 @@ eu:
         index:
           title: Irudiak pertsonalizatu
           update: Eguneratu
+          delete: Ezabatu
           image: Irudia
         update:
           notice: Irudia ondo eguneratuta

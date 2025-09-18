@@ -13,7 +13,6 @@ class Admin::Settings::FeaturesTabComponent < ApplicationComponent
       feature.user.recommendations_on_proposals
       feature.user.skip_verification
       feature.community
-      feature.resources
       feature.map
       feature.allow_attached_documents
       feature.allow_images

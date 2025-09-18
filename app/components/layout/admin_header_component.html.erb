@@ -2,10 +2,8 @@
   <div class="top-links">
     <%= render Layout::LocaleSwitcherComponent.new %>
 
-    <% if show_link_to_root_path? %>
-      <%= link_to root_path do %>
-        <%= t("admin.dashboard.index.back", org: setting["org_name"]) %>
-      <% end %>
+    <%= link_to root_path do %>
+      <%= t("admin.dashboard.index.back", org: setting["org_name"]) %>
     <% end %>
   </div>
 
@@ -13,8 +11,7 @@
     <h1>
       <%= link_to namespace_path do %>
         <%= setting["org_name"] %>
-        <br>
-        <small><%= namespaced_header_title %></small>
+        <br><small><%= namespaced_header_title %></small>
       <% end %>
     </h1>
 

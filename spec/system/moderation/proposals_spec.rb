@@ -46,9 +46,13 @@ describe "Moderate proposals" do
       describe "When a proposal has been selected for moderation" do
         before do
           visit moderation_proposals_path
-          click_link "All"
+          within(".menu.simple") do
+            click_link "All"
+          end
 
-          check proposal.title
+          within("#proposal_#{proposal.id}") do
+            check "proposal_#{proposal.id}_check"
+          end
         end
 
         scenario "Hide the proposal" do
@@ -92,17 +96,16 @@ describe "Moderate proposals" do
         create_list(:proposal, 2)
 
         visit moderation_proposals_path
-        click_link "All"
 
-        expect(page).to have_field type: :checkbox, count: 3
+        within(".js-check") { click_link "All" }
 
-        within(".check-all-none") { click_button "Select all" }
+        expect(all("input[type=checkbox]")).to all(be_checked)
 
-        expect(all(:checkbox)).to all(be_checked)
+        within(".js-check") { click_link "None" }
 
-        within(".check-all-none") { click_button "Select none" }
-
-        all(:checkbox).each { |checkbox| expect(checkbox).not_to be_checked }
+        all("input[type=checkbox]").each do |checkbox|
+          expect(checkbox).not_to be_checked
+        end
       end
 
       scenario "remembering page, filter and order" do
@@ -129,19 +132,25 @@ describe "Moderate proposals" do
       expect(page).to have_link("Mark as viewed")
 
       visit moderation_proposals_path(filter: "all")
-      expect(page).not_to have_link("All")
-      expect(page).to have_link("Pending review")
-      expect(page).to have_link("Mark as viewed")
+      within(".menu.simple") do
+        expect(page).not_to have_link("All")
+        expect(page).to have_link("Pending review")
+        expect(page).to have_link("Mark as viewed")
+      end
 
       visit moderation_proposals_path(filter: "pending_flag_review")
-      expect(page).to have_link("All")
-      expect(page).not_to have_link("Pending")
-      expect(page).to have_link("Mark as viewed")
+      within(".menu.simple") do
+        expect(page).to have_link("All")
+        expect(page).not_to have_link("Pending")
+        expect(page).to have_link("Mark as viewed")
+      end
 
       visit moderation_proposals_path(filter: "with_ignored_flag")
-      expect(page).to have_link("All")
-      expect(page).to have_link("Pending review")
-      expect(page).not_to have_link("Marked as viewed")
+      within(".menu.simple") do
+        expect(page).to have_link("All")
+        expect(page).to have_link("Pending review")
+        expect(page).not_to have_link("Marked as viewed")
+      end
     end
 
     scenario "Filtering proposals" do

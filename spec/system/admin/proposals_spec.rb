@@ -22,39 +22,31 @@ describe "Admin proposals", :admin do
     end
 
     scenario "Select a proposal" do
-      proposal = create(:proposal, title: "Forbid door-to-door sales")
+      proposal = create(:proposal)
 
       visit admin_proposals_path
 
-      within("#proposal_#{proposal.id}") do
-        expect(page).to have_content "No"
+      within("#proposal_#{proposal.id}") { click_link "Select" }
 
-        click_button "Select Forbid door-to-door sales"
-
-        expect(page).to have_content "Yes"
-      end
+      within("#proposal_#{proposal.id}") { expect(page).to have_link "Selected" }
 
       refresh
 
-      within("#proposal_#{proposal.id}") { expect(page).to have_content "Yes" }
+      within("#proposal_#{proposal.id}") { expect(page).to have_link "Selected" }
     end
 
     scenario "Unselect a proposal" do
-      proposal = create(:proposal, :selected, title: "Allow door-to-door sales")
+      proposal = create(:proposal, :selected)
 
       visit admin_proposals_path
 
-      within("#proposal_#{proposal.id}") do
-        expect(page).to have_content "Yes"
+      within("#proposal_#{proposal.id}") { click_link "Selected" }
 
-        click_button "Select Allow door-to-door sales"
-
-        expect(page).to have_content "No"
-      end
+      within("#proposal_#{proposal.id}") { expect(page).to have_link "Select" }
 
       refresh
 
-      within("#proposal_#{proposal.id}") { expect(page).to have_content "No" }
+      within("#proposal_#{proposal.id}") { expect(page).to have_link "Select" }
     end
   end
 

@@ -10,16 +10,19 @@ describe "Executions" do
   let!(:investment4) { create(:budget_investment, :winner,       heading: heading) }
   let!(:investment3) { create(:budget_investment, :incompatible, heading: heading) }
 
-  scenario "finds budget by slug" do
+  scenario "finds budget by id or slug" do
     budget.update!(slug: "budget_slug")
 
     visit budget_executions_path("budget_slug")
     within(".budgets-stats") { expect(page).to have_content budget.name }
-  end
 
-  scenario "finds budget by id" do
-    visit budget_executions_path(budget.id)
+    visit budget_executions_path(budget)
+    within(".budgets-stats") { expect(page).to have_content budget.name }
 
+    visit budget_executions_path("budget_slug")
+    within(".budgets-stats") { expect(page).to have_content budget.name }
+
+    visit budget_executions_path(budget)
     within(".budgets-stats") { expect(page).to have_content budget.name }
   end
 
@@ -27,21 +30,16 @@ describe "Executions" do
     create(:milestone, milestoneable: investment1)
 
     visit budget_path(budget)
-
-    expect(page).not_to have_content(investment1.title)
-
     click_link "See results"
 
-    expect(page).to have_content(investment1.title)
-    expect(page).to have_content(investment2.title)
-    expect(page).to have_content(investment4.title)
+    expect(page).to have_link("Milestones")
 
     click_link "Milestones"
 
+    expect(page).to have_content(investment1.title)
     expect(page).not_to have_content(investment2.title)
     expect(page).not_to have_content(investment3.title)
     expect(page).not_to have_content(investment4.title)
-    expect(page).to have_content(investment1.title)
   end
 
   scenario "Do not display headings with no winning investments for selected status" do
@@ -63,12 +61,14 @@ describe "Executions" do
   end
 
   scenario "Show message when there are no winning investments with the selected status" do
-    create(:milestone, milestoneable: investment1)
-    create(:milestone_status, name: "Executed")
+    create(:milestone_status, name: I18n.t("seeds.budgets.statuses.executed"))
 
-    visit budget_executions_path(budget)
+    visit budget_path(budget)
 
-    expect(page).not_to have_content("No winner investments in this state")
+    click_link "See results"
+    click_link "Milestones"
+
+    expect(page).to have_content("No winner investments in this state")
 
     select "Executed (0)", from: "Project's current state"
     click_button "Filter"
@@ -83,13 +83,56 @@ describe "Executions" do
   end
 
   context "Images" do
+    scenario "renders milestone image if available" do
+      milestone1 = create(:milestone, :with_image, milestoneable: investment1)
+
+      visit budget_path(budget)
+
+      click_link "See results"
+      click_link "Milestones"
+
+      expect(page).to have_content(investment1.title)
+      expect(page).to have_css("img[alt='#{milestone1.image.title}']")
+    end
+
+    scenario "renders investment image if no milestone image is available" do
+      create(:milestone, milestoneable: investment2)
+      create(:image, imageable: investment2)
+
+      visit budget_path(budget)
+
+      click_link "See results"
+      click_link "Milestones"
+
+      expect(page).to have_content(investment2.title)
+      expect(page).to have_css("img[alt='#{investment2.image.title}']")
+    end
+
     scenario "renders default image if no milestone nor investment images are available" do
       create(:milestone, milestoneable: investment4)
 
-      visit budget_executions_path(budget)
+      visit budget_path(budget)
 
-      expect(page).to have_content investment4.title
-      expect(page).to have_css "img[alt='#{investment4.title}']"
+      click_link "See results"
+      click_link "Milestones"
+
+      expect(page).to have_content(investment4.title)
+      expect(page).to have_css("img[alt='#{investment4.title}']")
+    end
+
+    scenario "renders last milestone's image if investment has multiple milestones with images associated" do
+      create(:milestone, milestoneable: investment1)
+      create(:milestone, :with_image, image_title: "First image", milestoneable: investment1)
+      create(:milestone, :with_image, image_title: "Second image", milestoneable: investment1)
+      create(:milestone, milestoneable: investment1)
+
+      visit budget_path(budget)
+
+      click_link "See results"
+      click_link "Milestones"
+
+      expect(page).to have_content(investment1.title)
+      expect(page).to have_css("img[alt='Second image']")
     end
   end
 
@@ -106,7 +149,10 @@ describe "Executions" do
                          publication_date: Date.yesterday,
                          status: status2)
 
-      visit budget_executions_path(budget)
+      visit budget_path(budget)
+
+      click_link "See results"
+      click_link "Milestones"
 
       expect(page).to have_content("All (2)")
       expect(page).to have_content("#{status1.name} (1)")
@@ -118,7 +164,10 @@ describe "Executions" do
       create(:milestone, milestoneable: investment2, status: status2)
       create(:milestone_status, name: I18n.t("seeds.budgets.statuses.executing_project"))
 
-      visit budget_executions_path(budget)
+      visit budget_path(budget)
+
+      click_link "See results"
+      click_link "Milestones"
 
       expect(page).to have_content(investment1.title)
       expect(page).to have_content(investment2.title)
@@ -126,8 +175,8 @@ describe "Executions" do
       select "Studying the project (1)", from: "Project's current state"
       click_button "Filter"
 
-      expect(page).not_to have_content(investment2.title)
       expect(page).to have_content(investment1.title)
+      expect(page).not_to have_content(investment2.title)
 
       select "Bidding (1)", from: "Project's current state"
       click_button "Filter"
@@ -138,8 +187,8 @@ describe "Executions" do
       select "Executing the project (0)", from: "Project's current state"
       click_button "Filter"
 
-      expect(page).not_to have_content(investment2.title)
       expect(page).not_to have_content(investment1.title)
+      expect(page).not_to have_content(investment2.title)
     end
 
     scenario "are based on latest milestone status" do
@@ -151,19 +200,19 @@ describe "Executions" do
                          publication_date: Date.yesterday,
                          status: status2)
 
-      visit budget_executions_path(budget)
-
-      expect(page).to have_content investment1.title
+      visit budget_path(budget)
+      click_link "See results"
+      click_link "Milestones"
 
       select "Studying the project (0)", from: "Project's current state"
       click_button "Filter"
 
-      expect(page).not_to have_content investment1.title
+      expect(page).not_to have_content(investment1.title)
 
       select "Bidding (1)", from: "Project's current state"
       click_button "Filter"
 
-      expect(page).to have_content investment1.title
+      expect(page).to have_content(investment1.title)
     end
 
     scenario "milestones with future dates are not shown" do
@@ -175,19 +224,19 @@ describe "Executions" do
                          publication_date: Date.tomorrow,
                          status: status2)
 
-      visit budget_executions_path(budget)
-
-      expect(page).to have_content investment1.title
-
-      select "Bidding (0)", from: "Project's current state"
-      click_button "Filter"
-
-      expect(page).not_to have_content investment1.title
+      visit budget_path(budget)
+      click_link "See results"
+      click_link "Milestones"
 
       select "Studying the project (1)", from: "Project's current state"
       click_button "Filter"
 
-      expect(page).to have_content investment1.title
+      expect(page).to have_content(investment1.title)
+
+      select "Bidding (0)", from: "Project's current state"
+      click_button "Filter"
+
+      expect(page).not_to have_content(investment1.title)
     end
 
     scenario "by milestone tag, only display tags for winner investments" do
@@ -201,7 +250,10 @@ describe "Executions" do
       investment3.milestone_tag_list.add("tag2")
       investment3.save!
 
-      visit budget_executions_path(budget)
+      visit budget_path(budget)
+
+      click_link "See results"
+      click_link "Milestones"
 
       expect(page).to have_content(investment1.title)
       expect(page).to have_content(investment2.title)
@@ -210,26 +262,26 @@ describe "Executions" do
       select "Studying the project (1)", from: "Project's current state"
       click_button "Filter"
 
-      expect(page).not_to have_content(investment2.title)
       expect(page).to have_content(investment1.title)
+      expect(page).not_to have_content(investment2.title)
 
       select "Bidding (1)", from: "Project's current state"
       click_button "Filter"
 
-      expect(page).to have_content(investment2.title)
       expect(page).not_to have_content(investment1.title)
+      expect(page).to have_content(investment2.title)
 
       select "tag1 (1)", from: "Milestone tag"
       click_button "Filter"
 
-      expect(page).not_to have_content(investment2.title)
       expect(page).not_to have_content(investment1.title)
+      expect(page).not_to have_content(investment2.title)
 
       select "All (2)", from: "Milestone tag"
       click_button "Filter"
 
-      expect(page).to have_content(investment2.title)
       expect(page).not_to have_content(investment1.title)
+      expect(page).to have_content(investment2.title)
     end
   end
 
@@ -242,7 +294,7 @@ describe "Executions" do
 
       visit budget_executions_path(budget)
 
-      expect(page).to have_css(".budget-executions-investment", count: 3)
+      expect(page).to have_css(".budget-execution", count: 3)
       expect(a_heading.name).to appear_before(m_heading.name)
       expect(m_heading.name).to appear_before(z_heading.name)
     end

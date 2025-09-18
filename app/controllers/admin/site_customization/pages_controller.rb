@@ -43,4 +43,8 @@ class Admin::SiteCustomization::PagesController < Admin::SiteCustomization::Base
 
       [*attributes, translation_params(SiteCustomization::Page)]
     end
+
+    def resource
+      SiteCustomization::Page.find(params[:id])
+    end
 end

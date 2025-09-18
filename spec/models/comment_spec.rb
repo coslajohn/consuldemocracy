@@ -175,14 +175,8 @@ describe Comment do
       expect(Comment.public_for_api).to be_empty
     end
 
-    it "returns comments on budget investments" do
-      comment = create(:comment, commentable: create(:budget_investment))
-
-      expect(Comment.public_for_api).to eq [comment]
-    end
-
-    it "does not return comments on elements which are not debates, proposals or budget investments" do
-      create(:comment, commentable: create(:topic))
+    it "does not return comments on elements which are not debates or proposals" do
+      create(:comment, commentable: create(:budget_investment))
 
       expect(Comment.public_for_api).to be_empty
     end

@@ -11,7 +11,11 @@ module FactoryBot
         build_class = evaluation.instance_variable_get(:@attribute_assigner)
                                 .instance_variable_get(:@build_class)
 
-        build_class.insert!(@strategy.result(evaluation))
+        timestamps = { created_at: Time.current, updated_at: Time.current }.select do |attribute, _|
+          build_class.has_attribute?(attribute)
+        end
+
+        build_class.insert!(timestamps.merge(@strategy.result(evaluation)))
       end
     end
 

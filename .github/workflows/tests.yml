@@ -15,19 +15,19 @@ env:
 
 jobs:
   tests:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     services:
       postgres:
-        image: postgres:13.16
+        image: postgres:10.10
         ports: ["5432:5432"]
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
           POSTGRES_USER: consul
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: ""
     env:
       PGUSER: consul
-      PGPASSWORD: password
+      POSTGRES_HOST: postgres
       RAILS_ENV: test
     strategy:
       fail-fast: false
@@ -46,16 +46,6 @@ jobs:
           node-version-file: ".node-version"
       - name: Install node packages
         run: npm clean-install
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install imagemagick
-      - name: Remove image-bundled Chrome
-        run: sudo apt-get purge google-chrome-stable
-      - name: Setup Chrome/Chromium 128
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: 128
-          install-chromedriver: true
-          install-dependencies: true
       - name: Copy secrets and database files
         run: for i in config/*.example; do cp "$i" "${i/.example}"; done
       - name: Setup database
@@ -81,12 +71,12 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-${{ matrix.ci_node_index }}
-          path: tmp/capybara/
+          name: screenshots
+          path: tmp/screenshots
   coveralls:
     permissions:
       contents: none
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: tests
     steps:
       - name: Finish coveralls

@@ -23,11 +23,7 @@ def log(msg)
 end
 
 def random_locales
-  [
-    Setting.default_locale,
-    *(Setting.enabled_locales & %i[en es]),
-    *Setting.enabled_locales.sample(4)
-  ].uniq.take(5)
+  [I18n.default_locale, *(I18n.available_locales & %i[en es]), *I18n.available_locales.sample(4)].uniq.take(5)
 end
 
 def random_locales_attributes(**attribute_names_with_values)

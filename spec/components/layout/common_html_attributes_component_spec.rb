@@ -1,7 +1,7 @@
 require "rails_helper"
 
-describe Layout::CommonHtmlAttributesComponent do
-  let(:component) { Layout::CommonHtmlAttributesComponent.new }
+describe Layout::CommonHTMLAttributesComponent do
+  let(:component) { Layout::CommonHTMLAttributesComponent.new }
 
   context "with multitenancy disabled" do
     before { allow(Rails.application.config).to receive(:multitenancy).and_return(false) }

@@ -152,6 +152,7 @@ ru:
     legislation/process: процесс
     legislation/question: вопрос
     poll/shift: Смена
+    poll/question/answer: Ответ
     user: Аккаунт
     verification/sms: телефон
     signature_sheet: Подписной лист
@@ -567,6 +568,8 @@ ru:
         support: "Вы просто должны нажать на кнопку, которую увидите под \"Поддержать это предложение\", и вы можете проинформировать себя перед продвижением. Только предложения, достигшие максимального числа голосов поддержки, будут исполнены Городским Советом, и я уверен, что вы поможете мне в достижении этого!"
         share: "А также будет великолепно, если вы сделаете мне огромное одолжение и поделитесь моим предложением с друзьями, родственниками и контактами!"
   polls:
+    all: "Все"
+    no_dates: "дата не назначена"
     dates: "С %{open_at} по %{closed_at}"
     final_date: "Последние пересчеты/Результаты"
     index:
@@ -662,6 +665,7 @@ ru:
       author_deleted: Пользователь удален
       email_deleted: E-mail удален
     back: Вернуться
+    check: Выбрать
     check_all: Все
     check_none: Ни одного
     collective: Коллектив
@@ -724,6 +728,7 @@ ru:
       see_more: Смотреть больше рекомендация
       hide: Скрыть рекомендации
     translations:
+      select_language_prompt: Выбрать язык
       remove_language: Удалить язык
       add_language: Добавить язык
   social:
@@ -732,6 +737,18 @@ ru:
     youtube: "%{org} YouTube"
     telegram: "%{org} Telegram"
     instagram: "%{org} Instagram"
+  stats:
+    index:
+      visits: посещения
+      debates: Обсуждения проблем
+      proposals: Заявки
+      comments: Комментарии
+      proposal_votes: Голоса по предложениям
+      debate_votes: Голоса по дебатам
+      comment_votes: Голоса по комментариям
+      votes: Всего голосов
+      verified_users: Верифицированные пользователи
+      unverified_users: Неверифицированные пользователи
   unauthorized:
     default: У вас нет разрешения, чтобы видеть эту страницу.
     manage:

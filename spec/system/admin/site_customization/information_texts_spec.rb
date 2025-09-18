@@ -67,18 +67,15 @@ describe "Admin custom information texts", :admin do
 
       visit admin_site_customization_information_texts_path
 
-      select "Français", from: "Add language"
+      select "Français", from: :add_language
       fill_in "contents[content_#{key}]values[value_fr]", with: "Aide personalise sur les débats"
 
       click_button "Save"
 
       expect(page).to have_content "Translation updated successfully"
 
-      refresh
-
-      expect(page).not_to have_content "Translation updated successfully"
-
-      select "Français", from: "Current language"
+      visit admin_site_customization_information_texts_path
+      select "Français", from: :select_language
 
       expect(page).to have_content "Aide personalise sur les débats"
       expect(page).not_to have_content "Aide sur les débats"
@@ -90,51 +87,49 @@ describe "Admin custom information texts", :admin do
 
       visit admin_site_customization_information_texts_path(tab: "proposals")
 
-      select "Français", from: "Current language"
+      select "Français", from: :select_language
       fill_in "contents_content_#{key}values_value_fr", with: "Partager personalise"
 
       click_button "Save"
       expect(page).to have_content "Translation updated successfully"
 
       visit admin_site_customization_information_texts_path(tab: "proposals")
-      select "Français", from: "Current language"
+      select "Français", from: :select_language
 
       expect(page).to have_content "Partager personalise"
       expect(page).not_to have_content "Partager la proposition"
     end
 
     scenario "Remove a translation" do
-      create(:i18n_content, key: "debates.index.featured_debates",
-                            value_en: "Custom featured",
-                            value_es: "Destacar personalizado")
+      featured = create(:i18n_content, key: "debates.index.featured_debates",
+                                       value_en: "Custom featured",
+                                       value_es: "Destacar personalizado")
 
-      create(:i18n_content, key: "debates.new.start_new",
-                            value_en: "Start a new custom debate",
-                            value_es: "Empezar un nuevo debate personalizado")
+      page_title = create(:i18n_content, key: "debates.new.start_new",
+                                         value_en: "Start a new debate",
+                                         value_es: "Empezar un debate")
 
       visit admin_site_customization_information_texts_path(tab: "debates")
 
-      select "Español", from: "Current language"
-
-      expect(page).to have_field "debates.index.featured_debates", with: "Destacar personalizado"
-      expect(page).to have_field "debates.new.start_new", with: "Empezar un nuevo debate personalizado"
-
+      select "Español", from: :select_language
       click_link "Remove language"
       click_button "Save"
 
-      expect(page).to have_content "Translation updated successfully"
-      expect(page).to have_select "Current language", options: ["English"]
-      expect(page).not_to have_field "debates.index.featured_debates"
+      expect(page).not_to have_link "Español"
 
       visit admin_site_customization_information_texts_path(tab: "debates")
+      select "English", from: :select_language
 
-      expect(page).to have_field "debates.index.featured_debates", with: "Custom featured"
-      expect(page).to have_field "debates.new.start_new", with: "Start a new custom debate"
+      expect(page).to have_content "Start a new debate"
+      expect(page).to have_content "Custom featured"
 
-      select "Español", from: "Add language"
+      featured.reload
+      page_title.reload
 
-      expect(page).to have_field "debates.index.featured_debates", with: "Destacar"
-      expect(page).to have_field "debates.new.start_new", with: "Empezar un debate"
+      expect(page_title.value_es).to be nil
+      expect(featured.value_es).to be nil
+      expect(page_title.value_en).to eq "Start a new debate"
+      expect(featured.value_en).to eq "Custom featured"
     end
   end
 end

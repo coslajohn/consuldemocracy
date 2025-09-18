@@ -10,18 +10,12 @@ module ApplicationHelper
     %i[ar fa he].include?(locale)
   end
 
-  def markdown(...)
-    MarkdownConverter.new(...).render
+  def markdown(text, **render_options)
+    MarkdownConverter.new(text, **render_options).render
   end
 
   def wysiwyg(text)
     WYSIWYGSanitizer.new.sanitize(text)
-  end
-
-  def include_stat_graphs_javascript
-    content_for :head do
-      javascript_include_tag "stat_graphs", "data-turbolinks-track" => "reload"
-    end
   end
 
   def author_of?(authorable, user)
@@ -52,8 +46,8 @@ module ApplicationHelper
     end
   end
 
-  def content_block(...)
-    SiteCustomization::ContentBlock.block_for(...)
+  def content_block(name, locale = I18n.locale)
+    SiteCustomization::ContentBlock.block_for(name, locale)
   end
 
   def self.asset_data_base64(path)

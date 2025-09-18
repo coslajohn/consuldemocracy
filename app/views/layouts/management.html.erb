@@ -14,7 +14,7 @@
       <%= check_box_tag :show_menu, nil, false, role: "switch" %>
 
       <nav class="admin-sidebar">
-        <%= render Management::MenuComponent.new %>
+        <%= render "/management/menu" %>
       </nav>
 
       <main id="main" class="admin-content <%= yield(:main_class) %>">

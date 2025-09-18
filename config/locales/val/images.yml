@@ -3,6 +3,7 @@ val:
     remove_image: Eliminar imatge
     form:
       title: Imatge descriptiva
+      title_placeholder: Afegeix un títol descriptiu per a l'imatge
       delete_button: Eliminar imatge
       note: "Pots pujar una imatge en els formats: %{accepted_content_types}, i de fins %{max_file_size} MB per fitxer."
       add_new_image: Afegir imatge

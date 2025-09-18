@@ -138,6 +138,7 @@ es-PE:
     budget/investment: Proyecto de inversión
     budget/heading: la partida presupuestaria
     poll/shift: Turno
+    poll/question/answer: Respuesta
     user: Conta
     verification/sms: el teléfono
     signature_sheet: la hoja de firmas
@@ -384,6 +385,8 @@ es-PE:
       forward:
         support_button: Apoyar esta propuesta
   polls:
+    all: "Todas"
+    no_dates: "sin fecha asignada"
     dates: "Desde el %{open_at} hasta el %{closed_at}"
     final_date: "Recuento final/Resultados"
     index:
@@ -467,6 +470,7 @@ es-PE:
     author_info:
       author_deleted: Usuario eliminado
     back: Volver
+    check: Seleccionar
     check_all: Todas
     check_none: Nenhum
     collective: Coletivo
@@ -520,6 +524,18 @@ es-PE:
     youtube: "YouTube de %{org}"
     telegram: "Telegram de %{org}"
     instagram: "Instagram de %{org}"
+  stats:
+    index:
+      visits: Visitas
+      debates: Discusiones
+      proposals: Propuestas
+      comments: Comentarios
+      proposal_votes: Votos en propuestas
+      debate_votes: Votos en debates
+      comment_votes: Votos en comentarios
+      votes: Votos
+      verified_users: Usuarios verificados
+      unverified_users: Usuarios sin verificar
   unauthorized:
     default: Você não possui permissão de acesso a esta página.
     manage:

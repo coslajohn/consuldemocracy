@@ -1,5 +1,5 @@
 class Budgets::MapComponent < ApplicationComponent
-  delegate :render_map, to: :helpers
+  use_helpers :render_map
   attr_reader :budget
 
   def initialize(budget)
@@ -27,15 +27,10 @@ class Budgets::MapComponent < ApplicationComponent
         {
           outline_points: geozone.outline_points,
           color: geozone.color,
-          headings: geozone_headings(geozone).map do |heading|
+          headings: budget.headings.where(geozone: geozone).map do |heading|
             link_to heading.name, budget_investments_path(budget, heading_id: heading.id)
-          end,
-          name: geozone_headings(geozone).map(&:name).join(", ")
+          end
         }
       end
-    end
-
-    def geozone_headings(geozone)
-      budget.headings.where(geozone: geozone)
     end
 end

@@ -1,27 +1,50 @@
 module Types
   class QueryType < Types::BaseObject
-    def self.collection_and_object_by_id_fields(name, type)
-      collection_field name.to_s.pluralize.to_sym, type, "Returns all #{name.to_s.pluralize}", null: false
-      object_by_id_field name, type, "Returns #{name} for ID", null: false
+    field :comments, Types::CommentType.connection_type, "Returns all comments", null: false
+    field :comment, Types::CommentType, "Returns comment for ID", null: false do
+      argument :id, ID, required: true, default_value: false
     end
 
-    collection_and_object_by_id_fields :budget, Types::BudgetType
-    collection_and_object_by_id_fields :comment, Types::CommentType
-    collection_and_object_by_id_fields :debate, Types::DebateType
-    collection_and_object_by_id_fields :geozone, Types::GeozoneType
-    collection_and_object_by_id_fields :milestone, Types::MilestoneType
-    collection_and_object_by_id_fields :proposal, Types::ProposalType
-    collection_and_object_by_id_fields :proposal_notification, Types::ProposalNotificationType
-    collection_and_object_by_id_fields :tag, Types::TagType
-    collection_and_object_by_id_fields :user, Types::UserType
-    collection_and_object_by_id_fields :vote, Types::VoteType
-
-    def budgets
-      Budget.public_for_api
+    field :debates, Types::DebateType.connection_type, "Returns all debates", null: false
+    field :debate, Types::DebateType, "Returns debate for ID", null: false do
+      argument :id, ID, required: true, default_value: false
     end
 
-    def budget(id:)
-      budgets.find(id)
+    field :geozones, Types::GeozoneType.connection_type, "Returns all geozones", null: false
+    field :geozone, Types::GeozoneType, "Returns geozone for ID", null: false do
+      argument :id, ID, required: true, default_value: false
+    end
+
+    field :proposals, Types::ProposalType.connection_type, "Returns all proposals", null: false
+    field :proposal, Types::ProposalType, "Returns proposal for ID", null: false do
+      argument :id, ID, required: true, default_value: false
+    end
+
+    field :proposal_notifications,
+          Types::ProposalNotificationType.connection_type,
+          "Returns all proposal notifications",
+          null: false
+
+    field :proposal_notification,
+          Types::ProposalNotificationType,
+          "Returns proposal notification for ID",
+          null: false do
+      argument :id, ID, required: true, default_value: false
+    end
+
+    field :tags, Types::TagType.connection_type, "Returns all tags", null: false
+    field :tag, Types::TagType, "Returns tag for ID", null: false do
+      argument :id, ID, required: true, default_value: false
+    end
+
+    field :users, Types::UserType.connection_type, "Returns all users", null: false
+    field :user, Types::UserType, "Returns user for ID", null: false do
+      argument :id, ID, required: true, default_value: false
+    end
+
+    field :votes, Types::VoteType.connection_type, "Returns all votes", null: false
+    field :vote, Types::VoteType, "Returns vote for ID", null: false do
+      argument :id, ID, required: true, default_value: false
     end
 
     def comments
@@ -29,7 +52,7 @@ module Types
     end
 
     def comment(id:)
-      comments.find(id)
+      Comment.find(id)
     end
 
     def debates
@@ -37,7 +60,7 @@ module Types
     end
 
     def debate(id:)
-      debates.find(id)
+      Debate.find(id)
     end
 
     def geozones
@@ -45,15 +68,7 @@ module Types
     end
 
     def geozone(id:)
-      geozones.find(id)
-    end
-
-    def milestones
-      Milestone.public_for_api
-    end
-
-    def milestone(id:)
-      milestones.find(id)
+      Geozone.find(id)
     end
 
     def proposals
@@ -61,7 +76,7 @@ module Types
     end
 
     def proposal(id:)
-      proposals.find(id)
+      Proposal.find(id)
     end
 
     def proposal_notifications
@@ -69,7 +84,7 @@ module Types
     end
 
     def proposal_notification(id:)
-      proposal_notifications.find(id)
+      ProposalNotification.find(id)
     end
 
     def tags
@@ -77,7 +92,7 @@ module Types
     end
 
     def tag(id:)
-      tags.find(id)
+      Tag.find(id)
     end
 
     def users
@@ -85,7 +100,7 @@ module Types
     end
 
     def user(id:)
-      users.find(id)
+      User.find(id)
     end
 
     def votes
@@ -93,7 +108,7 @@ module Types
     end
 
     def vote(id:)
-      votes.find(id)
+      Vote.find(id)
     end
   end
 end

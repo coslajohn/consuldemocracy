@@ -6,7 +6,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   invisible_captcha only: [:create], honeypot: :address, scope: :user
 
   def new
-    super
+    super do |user|
+      user.use_redeemable_code = true if params[:use_redeemable_code].present?
+    end
   end
 
   def create
@@ -62,13 +64,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
   private
 
     def sign_up_params
+      if params[:user].present? && params[:user][:redeemable_code].blank?
+        params[:user].delete(:redeemable_code)
+      end
+
       params.require(:user).permit(allowed_params)
     end
 
     def allowed_params
       [
         :username, :email, :password,
-        :password_confirmation, :terms_of_service, :locale
+        :password_confirmation, :terms_of_service, :locale,
+        :redeemable_code
       ]
     end
 

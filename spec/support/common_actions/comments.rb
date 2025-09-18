@@ -1,20 +1,25 @@
 module Comments
-  def reply_to(comment, with: "I like what you say", replier: create(:user))
+  def comment_on(commentable, user = nil)
+    user ||= create(:user)
+
+    comment = create(:comment, commentable: commentable, user: user)
+    CommentNotifier.new(comment: comment).process
+  end
+
+  def reply_to(comment, replier: create(:user))
     login_as(replier)
 
     visit polymorphic_path(comment.commentable)
 
-    within "#comment_#{comment.id}" do
-      click_link "Reply"
-    end
-
+    click_link "Reply"
     within "#js-comment-form-comment_#{comment.id}" do
-      fill_in comment_body(comment.commentable), with: with
+      fill_in "Leave your comment", with: "It will be done next week."
       click_button "Publish reply"
     end
+    expect(page).to have_content "It will be done next week."
+  end
 
-    within "#comment_#{comment.id}" do
-      expect(page).to have_content with
-    end
+  def avatar(name)
+    "img.initialjs-avatar[data-name='#{name}']"
   end
 end

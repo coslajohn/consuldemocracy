@@ -1,7 +1,9 @@
 require "rails_helper"
 
 describe "Budgets" do
-  let(:budget) { create(:budget) }
+  let(:budget)             { create(:budget) }
+  let(:level_two_user)     { create(:user, :level_two) }
+  let(:allowed_phase_list) { ["balloting", "reviewing_ballots", "finished"] }
 
   context "Load" do
     before { budget.update(slug: "budget_slug") }
@@ -43,11 +45,9 @@ describe "Budgets" do
     end
 
     scenario "Show finished budgets list" do
-      budget = create(:budget)
       finished_budget_1 = create(:budget, :finished)
       finished_budget_2 = create(:budget, :finished)
       drafting_budget = create(:budget, :drafting)
-
       visit budgets_path
 
       within("#finished_budgets") do

@@ -190,10 +190,13 @@ describe "Admin Notifications", :admin do
 
       visit admin_admin_notification_path(notification)
 
-      accept_confirm { click_button "Send notification" }
+      accept_confirm { click_link "Send notification" }
 
       expect(page).to have_content "Notification sent successfully"
-      expect(page).to have_content "3 users got notified"
+
+      User.find_each do |user|
+        expect(user.notifications.count).to eq(1)
+      end
     end
 
     scenario "A sent Admin notification can not be sent" do

@@ -3,6 +3,7 @@ FactoryBot.define do
     sequence(:title)     { |n| "Proposal #{n} title" }
     sequence(:summary)   { |n| "In summary, what we want is... #{n}" }
     description          { "Proposal description" }
+    video_url            { "https://youtu.be/nhuNb0XtRhQ" }
     responsible_name     { "John Snow" }
     terms_of_service     { "1" }
     published_at         { Time.current }
@@ -80,10 +81,6 @@ FactoryBot.define do
       after(:create) { |proposal| create(:image, imageable: proposal) }
     end
 
-    trait :with_video do
-      video_url { "https://youtu.be/nhuNb0XtRhQ" }
-    end
-
     transient do
       voters { [] }
       followers { [] }
@@ -142,7 +139,7 @@ FactoryBot.define do
   factory :dashboard_action, class: "Dashboard::Action" do
     title { Faker::Lorem.sentence[0..79].strip }
     description { Faker::Lorem.sentence }
-    request_to_administrators { false }
+    request_to_administrators { true }
     day_offset { 0 }
     required_supports { 0 }
     order { 0 }

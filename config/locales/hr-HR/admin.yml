@@ -160,6 +160,7 @@ hr:
         valuator_filter_all: Svi procjenitelji
         tags_filter_all: Sve oznake
         advanced_filters: Napredni filtri
+        placeholder: Pretraži projetke
         filters:
           all: Svi
           without_admin: Bez dodjeljenog admina
@@ -189,6 +190,7 @@ hr:
           unfeasible: "Neizvodljivo"
           undecided: "Nije odlučeno"
         selected: "Odabrano"
+        select: "Odaberi"
         list:
           id: ID
           title: Naziv
@@ -547,6 +549,7 @@ hr:
         index:
           title: Verzije nacrta
           create: Stvori verziju
+          delete: Izbriši
           preview: Pregled
         new:
           back: Nazad
@@ -579,6 +582,7 @@ hr:
           back: Nazad
           title: Pitanja povezana s ovim procesom
           create: Stvori pitanje
+          delete: Izbriši
         new:
           back: Nazad
           title: Stvori novo pitanje
@@ -999,11 +1003,18 @@ hr:
         unable_notice: "Ne možete obrisati glasanje koje ima zabilježene glasove"
     questions:
       index:
+        title: "Pitanja"
         create: "Stvori pitanje"
+        no_questions: "Ne postoje pitanja."
+        filter_poll: Filtriraj po Glasanju
         select_poll: Odaberi Glasanje
+        questions_tab: "Pitanja"
         successful_proposals_tab: "Uspješni prijedlozi"
         create_question: "Stvori pitanje"
         table_proposal: "Prijedlog"
+        table_question: "Pitanje"
+        table_poll: "Glasanje"
+        poll_not_assigned: "Glasanje nije dodijeljeno"
       edit:
         title: "Uredi Pitanje"
       new:
@@ -1020,6 +1031,7 @@ hr:
         edit_question: Uredi pitanje
         valid_answers: Valjani odgovori
         add_answer: Dodaj odgovor
+        video_url: Vanjski video
         answers:
           title: Odgovor
           description: Opis
@@ -1145,6 +1157,7 @@ hr:
         title: Prijedlozi
         id: ID
         author: Autor
+        select: Odaberi
         selected: Odabrano
         milestones: Ključni ciljevi
         no_proposals: Ne postoje prijedlozi.
@@ -1312,6 +1325,7 @@ hr:
           verified_users_who_didnt_vote_proposals: Potvrđeni korisnici koji nisu glasali za prijedloge
           visits: Broj posjeta
           votes: Ukupno glasova
+        budgets_title: Participativno budžetiranje
         participatory_budgets: Participativni Budžeti
         direct_messages: Izravne poruke
         proposal_notifications: Obavijesti prijedloga
@@ -1319,6 +1333,8 @@ hr:
         polls: Glasanja
       graph:
         debate_created: Rasprave
+        visit: Broj posjeta
+        level_2_user: Razina 2 korisnika
         proposal_created: Prijedlozi građana
       budgets:
         no_data_before_balloting_phase: "Nema podataka za prikaz prije faze glasovanja."
@@ -1425,6 +1441,7 @@ hr:
         index:
           title: Prilagođene slike
           update: Ažuriranje
+          delete: Izbriši
           image: Slika
         update:
           notice: Slika je uspješno ažurirana

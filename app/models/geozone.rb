@@ -1,12 +1,9 @@
 class Geozone < ApplicationRecord
   include Graphqlable
 
-  attribute :color, default: "#0000ff"
-
   has_many :proposals
   has_many :debates
   has_many :users
-  has_many :postcodes
   has_many :headings, class_name: "Budget::Heading", dependent: :nullify
   validates :name, presence: true
   validates :geojson, geojson_format: true
@@ -24,49 +21,26 @@ class Geozone < ApplicationRecord
   end
 
   def outline_points
-    normalized_geojson&.to_json
+    normalized_coordinates.map { |longlat| [longlat.last, longlat.first] }
   end
 
   private
 
-    def normalized_geojson
+    def normalized_coordinates
       if geojson.present?
-        parsed_geojson = JSON.parse(geojson)
-
-        if parsed_geojson["type"] == "FeatureCollection"
-          parsed_geojson["features"].each do |feature|
-            feature["properties"] ||= {}
-          end
-
-          parsed_geojson
-        elsif parsed_geojson["type"] == "Feature"
-          parsed_geojson["properties"] ||= {}
-
-          wrap_in_feature_collection(parsed_geojson)
-        elsif parsed_geojson["geometry"]
-          parsed_geojson["properties"] ||= {}
-
-          wrap_in_feature_collection(wrap_in_feature(parsed_geojson["geometry"]))
-        elsif parsed_geojson["type"] && parsed_geojson["coordinates"]
-          wrap_in_feature_collection(wrap_in_feature(parsed_geojson))
+        if geojson.match(/"coordinates"\s*:\s*\[\s*\[\s*\[\s*\[/)
+          coordinates.reduce([], :concat).reduce([], :concat)
+        elsif geojson.match(/"coordinates"\s*:\s*\[\s*\[\s*\[/)
+          coordinates.reduce([], :concat)
         else
-          raise ArgumentError, "Invalid GeoJSON fragment"
+          coordinates
         end
+      else
+        []
       end
     end
 
-    def wrap_in_feature(geometry)
-      {
-        type: "Feature",
-        geometry: geometry,
-        properties: {}
-      }
-    end
-
-    def wrap_in_feature_collection(feature)
-      {
-        type: "FeatureCollection",
-        features: [feature]
-      }
+    def coordinates
+      JSON.parse(geojson)["geometry"]["coordinates"]
     end
 end

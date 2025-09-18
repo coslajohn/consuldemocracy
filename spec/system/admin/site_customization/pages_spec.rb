@@ -33,7 +33,7 @@ describe "Admin custom pages", :admin do
       visit admin_root_path
 
       within("#side_menu") do
-        click_button "Site content"
+        click_link "Site content"
         click_link "Custom pages"
       end
 
@@ -63,7 +63,7 @@ describe "Admin custom pages", :admin do
       visit admin_root_path
 
       within("#side_menu") do
-        click_button "Site content"
+        click_link "Site content"
         click_link "Custom pages"
       end
 
@@ -93,9 +93,7 @@ describe "Admin custom pages", :admin do
     custom_page = create(:site_customization_page, title: "An example custom page")
     visit edit_admin_site_customization_page_path(custom_page)
 
-    accept_confirm "Are you sure? This action will delete \"An example custom page\" and can't be undone." do
-      click_button "Delete page"
-    end
+    click_link "Delete page"
 
     expect(page).not_to have_content "An example custom page"
     expect(page).not_to have_content "example-page"

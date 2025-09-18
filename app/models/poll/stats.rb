@@ -21,10 +21,6 @@ class Poll::Stats
     total_participants_web + total_participants_booth
   end
 
-  def participation_date
-    poll.ends_at
-  end
-
   def channels
     CHANNELS.select { |channel| send(:"total_participants_#{channel}") > 0 }
   end
@@ -121,7 +117,7 @@ class Poll::Stats
 
     stats_cache(*stats_methods)
 
-    def full_cache_key_for(key)
-      "polls_stats/#{poll.id}/#{key}"
+    def stats_cache(key, &)
+      Rails.cache.fetch("polls_stats/#{poll.id}/#{key}/#{version}", &)
     end
 end

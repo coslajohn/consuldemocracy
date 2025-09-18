@@ -161,15 +161,12 @@ describe "Polls" do
     end
 
     click_button "Update poll"
-
-    expect(page).to have_content "Poll updated successfully"
-
     visit edit_proposal_dashboard_poll_path(proposal, poll)
 
     expect(page).to have_css ".nested-fields", count: 1
   end
 
-  scenario "Edit poll allows users to remove options" do
+  scenario "Edit poll allows users to remove answers" do
     poll = create(:poll, related: proposal, starts_at: 1.week.from_now)
     create(:poll_question, :yes_no, poll: poll)
     visit proposal_dashboard_polls_path(proposal)
@@ -177,7 +174,7 @@ describe "Polls" do
       click_link "Edit survey"
     end
 
-    within ".js-questions .js-options" do
+    within ".js-questions .js-answers" do
       expect(page).to have_css ".nested-fields", count: 2
       within first(".nested-fields") do
         click_link class: "delete"
@@ -191,7 +188,7 @@ describe "Polls" do
 
     visit edit_proposal_dashboard_poll_path(proposal, poll)
 
-    within ".js-questions .js-options" do
+    within ".js-questions .js-answers" do
       expect(page).to have_css ".nested-fields", count: 1
     end
   end
@@ -202,7 +199,7 @@ describe "Polls" do
     visit proposal_dashboard_polls_path(proposal)
 
     within("#poll_#{poll.id}") do
-      accept_confirm { click_button "Delete survey" }
+      accept_confirm { click_link "Delete survey" }
     end
 
     expect(page).to have_content("Survey deleted successfully")
@@ -217,7 +214,7 @@ describe "Polls" do
     visit proposal_dashboard_polls_path(proposal)
 
     within("#poll_#{poll.id}") do
-      accept_confirm { click_button "Delete survey" }
+      accept_confirm { click_link "Delete survey" }
     end
 
     expect(page).to have_content("You cannot destroy a survey that has responses")

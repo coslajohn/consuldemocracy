@@ -1,7 +1,7 @@
 .admin-dashboard-index {
   > header h2 {
-    border-bottom: 1px solid $border;
     text-transform: uppercase;
+    border-bottom: 1px solid $border;
   }
 
   address {
@@ -9,7 +9,7 @@
       &::after {
         content: "";
         display: block;
-        margin-bottom: calc($line-height / 3);
+        margin-bottom: $line-height / 3;
       }
     }
 

@@ -1,3 +1,5 @@
+require "manager_authenticator"
+
 class Management::SessionsController < ActionController::Base
   include TenantVariants
   include GlobalizeFallbacks

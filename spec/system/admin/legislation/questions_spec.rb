@@ -75,9 +75,7 @@ describe "Admin legislation questions", :admin do
 
       visit edit_admin_legislation_process_question_path(process, question)
 
-      accept_confirm("Are you sure? This action will delete \"Question 2\" and can't be undone.") do
-        click_button "Delete"
-      end
+      click_link "Delete"
 
       expect(page).to have_content "Questions"
       expect(page).to have_content "Question 1"
@@ -107,15 +105,12 @@ describe "Admin legislation questions", :admin do
       create(:legislation_question_option, question: question, value: "Original")
 
       visit edit_question_url
-      fill_in "Add a closed answer", with: "Changed"
+      find("#nested_question_options input").set("Changed")
       click_button "Save changes"
 
-      expect(page).to have_content "Question updated successfully"
       expect(page).not_to have_css "#error_explanation"
 
-      refresh
-
-      expect(page).not_to have_content "Question updated successfully"
+      visit edit_question_url
       expect(page).to have_field(field_en[:id], with: "Changed")
     end
 
@@ -134,12 +129,8 @@ describe "Admin legislation questions", :admin do
       expect(page).to have_field fields_for(:en).last[:id], with: "No"
 
       click_button "Save changes"
+      visit edit_question_url
 
-      expect(page).to have_content "Question updated successfully"
-
-      refresh
-
-      expect(page).not_to have_content "Question updated successfully"
       expect(page).not_to have_field fields_for(:en).first[:id], with: "Yes"
       expect(page).to have_field fields_for(:en).last[:id], with: "No"
     end
@@ -154,21 +145,18 @@ describe "Admin legislation questions", :admin do
 
         click_link "Add option"
 
-        fill_in "Add a closed answer", with: "Option 1"
+        find("#nested_question_options input").set("Option 1")
 
-        select "Español", from: "Current language"
+        select "Español", from: :select_language
 
-        fill_in "Add a closed answer", with: "Opción 1"
+        find("#nested_question_options input").set("Opción 1")
 
         click_button "Save changes"
-
-        expect(page).to have_content "Question updated successfully"
-
         visit edit_question_url
 
         expect(page).to have_field(field_en[:id], with: "Option 1")
 
-        select "Español", from: "Current language"
+        select "Español", from: :select_language
 
         expect(page).to have_field(field_es[:id], with: "Opción 1")
       end
@@ -176,25 +164,23 @@ describe "Admin legislation questions", :admin do
       scenario "Add new question option after changing active locale" do
         visit edit_question_url
 
-        select "Español", from: "Current language"
+        select "Español", from: :select_language
 
         click_link "Add option"
 
-        fill_in "Add a closed answer", with: "Opción 1"
+        find("#nested_question_options input").set("Opción 1")
 
-        select "English", from: "Current language"
+        select "English", from: :select_language
 
-        fill_in "Add a closed answer", with: "Option 1"
+        find("#nested_question_options input").set("Option 1")
 
         click_button "Save changes"
-
-        expect(page).to have_content "Question updated successfully"
 
         visit edit_question_url
 
         expect(page).to have_field(field_en[:id], with: "Option 1")
 
-        select "Español", from: "Current language"
+        select "Español", from: :select_language
 
         expect(page).to have_field(field_es[:id], with: "Opción 1")
       end

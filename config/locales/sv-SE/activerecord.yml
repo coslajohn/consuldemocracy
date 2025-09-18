@@ -151,9 +151,6 @@ sv:
       votation_type:
         one: Omröstningstyp
         other: Omröstningstyper
-      cookies/vendor:
-        one: cookie-leverantör
-        other: cookie-leverantörer
     attributes:
       budget:
         name: "Namn"
@@ -296,6 +293,7 @@ sv:
         public_interests: "Visa etiketterna för de element jag följer offentligt"
         recommended_debates: "Visa rekommenderade debatter"
         recommended_proposals: "Visa rekommenderade förslag"
+        redeemable_code: "Bekräftelsekod mottagen via e-post"
       direct_message:
         title: "Titel"
         body: "Meddelande"
@@ -461,13 +459,13 @@ sv:
       image:
         title: Titel
         attachment: "Välj bild"
-      poll/question/option:
+      poll/question/answer:
         title: Svar
         description: Beskrivning
-      poll/question/option/translation:
+      poll/question/answer/translation:
         title: Svar
         description: "Beskrivning (valfritt)"
-      poll/question/option/video:
+      poll/question/answer/video:
         title: Titel
         url: Extern video
       newsletter:
@@ -490,7 +488,6 @@ sv:
         link_text: Länktext
         link_url: Länk-URL
         columns: Antal kolumner
-        order: Position
       widget/card/translation:
         label: Etikett (valfritt)
         title: Titel
@@ -536,10 +533,6 @@ sv:
       votation_type/vote_type:
         unique: Unikt svar
         multiple: Flera svar
-      cookies/vendor:
-        name: Leverantörsnamn
-        cookie: Cookie-namn
-        script: Javascript-kod
     errors:
       models:
         user:
@@ -558,7 +551,6 @@ sv:
           attributes:
             geojson:
               invalid: "Angiven GeoJSON följer inte korrekt format. Den måste följa ett format av typen \"Polygon\" eller \"MultiPolygon\"."
-              invalid_coordinates: "Tillhandahållen GeoJSON innehåller ogiltiga koordinater; koordinaterna måste ha erfordrat format för \"Longitud, latitud\" och följa standardformatet RFC 7946"
         image:
           attributes:
             attachment:

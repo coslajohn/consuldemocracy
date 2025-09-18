@@ -1,6 +1,5 @@
 class Admin::Stats::BudgetSupportingComponent < ApplicationComponent
   attr_reader :budget
-  use_helpers :include_stat_graphs_javascript
 
   def initialize(budget)
     @budget = budget
@@ -9,7 +8,7 @@ class Admin::Stats::BudgetSupportingComponent < ApplicationComponent
   private
 
     def stats
-      @stats ||= Budget::Stats.new(budget, cache: false)
+      @stats ||= Budget::Stats.new(budget)
     end
 
     def headings_stats
@@ -28,9 +27,5 @@ class Admin::Stats::BudgetSupportingComponent < ApplicationComponent
       budget.headings.map do |heading|
         [heading, headings_stats[heading.id][:total_participants_support_phase]]
       end
-    end
-
-    def chart
-      @chart ||= Ahoy::Chart.new("budget_investment_supported")
     end
 end

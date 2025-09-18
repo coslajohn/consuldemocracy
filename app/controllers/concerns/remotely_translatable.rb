@@ -1,10 +1,10 @@
 module RemotelyTranslatable
   private
 
-    def detect_remote_translations(*)
+    def detect_remote_translations(*args)
       return [] unless Setting["feature.remote_translations"].present? && api_key_has_been_set_in_secrets?
 
-      RemoteTranslation.for(*)
+      RemoteTranslation.for(*args)
     end
 
     def api_key_has_been_set_in_secrets?

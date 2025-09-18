@@ -1,14 +1,14 @@
-@use "sass:color";
-
 // Table of Contents
 //
 // 01. Global styles
 // 02. Sidebar
 // 03. List elements
+// 04. Stats
 // 05. Management
 // 06. Polls
 // 07. Legislation
 // 08. CMS
+// 09. Map
 // 10. Budgets
 // 11. Newsletters
 //
@@ -30,15 +30,6 @@ $table-header:   #ecf1f6;
 
 .admin {
   @include admin-layout;
-
-  main {
-    &.admin-site-customization-pages-new,
-    &.admin-site-customization-pages-edit {
-      > header {
-        @include grid-row;
-      }
-    }
-  }
 
   h2 {
     font-weight: 100;
@@ -119,7 +110,7 @@ $table-header:   #ecf1f6;
     th {
       background: $table-header;
       color: $admin-text;
-      padding: calc($line-height / 2);
+      padding: $line-height / 2;
 
       a {
         color: inherit;
@@ -131,7 +122,7 @@ $table-header:   #ecf1f6;
       border: $table-border;
 
       &:hover {
-        background: color.adjust(color.adjust($table-background, $lightness: -2%), $red: -4, $green: -1);
+        background: adjust-color(darken($table-background, 2%), $red: -4, $green: -1);
       }
     }
 
@@ -144,7 +135,7 @@ $table-header:   #ecf1f6;
     }
 
     [type="submit"] ~ a {
-      margin-left: calc($line-height / 2);
+      margin-left: $line-height / 2;
     }
 
     [type="checkbox"] {
@@ -192,11 +183,11 @@ $table-header:   #ecf1f6;
 
   .menu.simple,
   .order-links {
-    margin-bottom: calc($line-height / 2);
+    margin-bottom: $line-height / 2;
 
     h2 {
       font-weight: bold;
-      margin-bottom: calc($line-height / 3);
+      margin-bottom: $line-height / 3;
     }
 
     .is-active {
@@ -214,6 +205,10 @@ $table-header:   #ecf1f6;
     padding-right: 0;
   }
 
+  .accordion-title {
+    font-size: $base-font-size;
+  }
+
   .button.secondary {
     margin-right: rem-calc(12);
   }
@@ -223,19 +218,70 @@ $table-header:   #ecf1f6;
       padding-top: 0;
     }
   }
+
+  .is-featured {
+    margin-top: rem-calc(36);
+  }
 }
 
 .for-print-only {
   display: none;
 }
 
+@include breakpoint(medium) {
+
+  tr {
+
+    .on-hover-block {
+      display: none;
+    }
+
+    &:hover .on-hover-block {
+      display: block;
+      margin: 0;
+      margin-top: $line-height / 2;
+      width: 100%;
+    }
+  }
+}
+
+@include breakpoint(medium) {
+
+  tr {
+
+    .on-hover {
+      display: none;
+    }
+
+    &:hover .on-hover {
+      display: inline;
+    }
+  }
+}
+
+.input-group {
+
+  .input-group-button {
+    padding-bottom: rem-calc(16);
+    vertical-align: top;
+  }
+}
+
 .sortable thead th:hover {
-  cursor: pointer;
   text-decoration: underline;
+  cursor: pointer;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0 !important;
 }
 
 .enabled {
   color: $color-success;
+}
+
+.disabled {
+  color: $text-medium;
 }
 
 .icon-sortable {
@@ -251,8 +297,8 @@ $table-header:   #ecf1f6;
   }
 
   &::before {
-    bottom: 0;
     content: "\f0d8";
+    bottom: 0;
   }
 
   &::after {
@@ -280,8 +326,8 @@ code {
 }
 
 .content-type {
-  padding-right: $line-height;
   white-space: nowrap;
+  padding-right: $line-height;
 
   label {
     margin-left: 0 !important;
@@ -295,6 +341,34 @@ code {
 
 // 03. List elements
 // -----------------
+
+.delete {
+  border-bottom: 1px dotted;
+  color: $delete;
+  font-size: $small-font-size;
+
+  &:hover,
+  &:active,
+  &:focus {
+    border-bottom-color: transparent;
+    color: darken($delete, 10%);
+  }
+}
+
+[class^="icon-"].delete {
+  border: 0;
+  font-size: $base-font-size;
+}
+
+.archived {
+  color: $text-medium;
+  font-size: rem-calc(12);
+}
+
+.ignored {
+  color: $text-medium;
+  font-size: rem-calc(12);
+}
 
 .rejected {
   color: $delete;
@@ -313,10 +387,18 @@ code {
   padding: rem-calc(6) rem-calc(12);
 }
 
+.button.small.success {
+  margin-left: rem-calc(12);
+
+  &.no-margin {
+    margin-left: 0;
+  }
+}
+
 .moderation-description {
   max-height: rem-calc(65);
-  max-width: rem-calc(700);
   overflow: hidden;
+  max-width: rem-calc(700);
 
   &:hover {
     max-height: rem-calc(1000);
@@ -324,16 +406,41 @@ code {
   }
 }
 
+// 04. Stats
+// ---------
+
+.stats-numbers {
+  p {
+    color: $text-medium;
+    font-size: rem-calc(13);
+    padding: rem-calc(6);
+    text-transform: uppercase;
+
+    &.featured {
+      background: $info-bg;
+      border: 1px solid $info-border;
+      font-weight: bold;
+    }
+
+    .number {
+      color: $body-font-color;
+      font-size: rem-calc(30);
+      font-weight: bold;
+    }
+  }
+}
+
 // 05. Management
 // --------------
 
-.account-info {
+.account-info,
+.login-as {
   background-color: $highlight;
   border-radius: rem-calc(3);
   font-size: rem-calc(16);
   font-weight: normal;
   margin-bottom: $line-height;
-  padding: calc($line-height / 2);
+  padding: $line-height / 2;
 
   strong {
     font-size: rem-calc(18);
@@ -346,7 +453,7 @@ code {
   border-bottom-right-radius: rem-calc(6);
   border-top: 2px solid;
   font-size: $small-font-size;
-  padding: calc($line-height / 2);
+  padding: $line-height / 2;
 }
 
 .admin-budget-investment-info {
@@ -354,7 +461,7 @@ code {
   border: 2px solid $highlight;
   border-radius: rem-calc(4);
   margin-bottom: $line-height;
-  padding: calc($line-height / 2);
+  padding: $line-height / 2;
 
   p {
     font-size: $small-font-size;
@@ -395,17 +502,9 @@ code {
   flex-wrap: wrap;
 
   a,
-  button,
-  form {
-    margin-#{$global-left}: auto;
-  }
-
-  a,
   button {
-    &:not(.delete) {
-      @include regular-button;
-      margin-#{$global-left}: auto;
-    }
+    @include regular-button;
+    margin-left: auto;
   }
 }
 
@@ -423,6 +522,13 @@ code {
   }
 }
 
+.investment-projects-summary {
+
+  .total-price {
+    white-space: nowrap;
+  }
+}
+
 .management-list {
   max-width: rem-calc(1200);
 }
@@ -430,13 +536,19 @@ code {
 // 06. Polls
 // -----------------
 
+.count-error {
+  background: $alert-bg !important;
+  color: $color-alert;
+  font-weight: bold;
+}
+
 table {
 
   .callout {
     height: $line-height * 2;
     line-height: $line-height * 2;
     margin: 0;
-    padding: 0 calc($line-height / 2);
+    padding: 0 $line-height / 2;
   }
 }
 
@@ -456,8 +568,8 @@ table {
 }
 
 .markdown-editor .markdown-preview {
-  height: 15em;
   overflow-y: auto;
+  height: 15em;
 }
 
 .markdown-editor textarea {
@@ -465,21 +577,37 @@ table {
 }
 
 .markdown-editor.fullscreen {
+  z-index: 9999;
+  width: 100%;
   height: 100%;
-  left: 0;
   position: fixed;
   top: 0;
-  width: 100%;
-  z-index: 9999;
+  left: 0;
 }
 
 .markdown-editor.fullscreen .markdown-preview {
   height: 99%;
 }
 
+.edit-legislation-draft-version .row {
+  margin-bottom: 2rem;
+}
+
 .legislation-admin {
   .menu .is-active > a {
     background: none;
+  }
+}
+
+.legislation-process-save {
+  @include breakpoint(medium) {
+    float: right;
+  }
+}
+
+.legislation-question-delete {
+  @include breakpoint(medium) {
+    text-align: right;
   }
 }
 
@@ -493,7 +621,37 @@ table {
   }
 }
 
+.legislation-process-edit {
+
+  .edit-legislation-process {
+
+    small {
+      color: $text-medium;
+    }
+
+    .legislation-process-start,
+    .legislation-process-end {
+      @include breakpoint(medium) {
+        line-height: 3rem;
+      }
+    }
+
+    .legislation-process-end {
+      @include breakpoint(medium) {
+        text-align: right;
+      }
+    }
+  }
+}
+
 .legislation-draft-versions-index {
+
+  .legislation-process-question,
+  .legislation-process-version {
+    @include breakpoint(medium) {
+      text-align: right;
+    }
+  }
 
   table tr td {
     padding: 0.25rem 0.375rem;
@@ -512,6 +670,39 @@ table {
 
   input::placeholder {
     font-style: italic;
+  }
+
+  .legislation-questions-answers {
+    margin-bottom: 1rem;
+  }
+}
+
+.field {
+  margin-bottom: 1rem;
+
+  @include breakpoint(medium) {
+    margin-bottom: 0;
+  }
+
+  a {
+    line-height: 3rem;
+    color: $delete;
+
+    span {
+      text-decoration: underline;
+    }
+
+    .icon-x {
+      vertical-align: sub;
+      text-decoration: none;
+      line-height: 0;
+    }
+
+    &:active,
+    &:focus,
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -542,8 +733,8 @@ table {
     }
 
     .markdown-editor-header {
-      display: inline-block;
       vertical-align: top;
+      display: inline-block;
 
       @include breakpoint(medium) {
         line-height: 3rem;
@@ -552,10 +743,10 @@ table {
 
     .truncate {
       @include breakpoint(medium) {
+        width: 40vw;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 40vw;
       }
     }
 
@@ -571,10 +762,10 @@ table {
 
     input {
       font-size: $small-font-size;
-      margin-bottom: 0;
-      margin-left: 0;
-      margin-top: 1rem;
       padding: 0.5em 1em;
+      margin-left: 0;
+      margin-bottom: 0;
+      margin-top: 1rem;
 
       @include breakpoint(medium) {
         margin: 0.5rem;
@@ -589,26 +780,32 @@ table {
 
 .legislation-draft-versions-form {
 
+  .legislation-process-version {
+    @include breakpoint(medium) {
+      text-align: right;
+    }
+  }
+
   .control {
     cursor: pointer;
     margin-bottom: 1rem;
 
     small {
-      color: $text-medium;
       display: block;
       margin-top: -1rem;
+      color: $text-medium;
 
       @include breakpoint(medium) {
-        display: inline-block;
         margin-left: 0.25rem;
+        display: inline-block;
         margin-top: 0;
       }
     }
   }
 
   .fullscreen-container {
-    background: #ccdbe6;
     text-align: center;
+    background: #ccdbe6;
 
     .markdown-editor-header,
     .markdown-editor-buttons {
@@ -616,21 +813,21 @@ table {
     }
 
     span {
-      font-size: $small-font-size;
       text-decoration: none;
+      font-size: $small-font-size;
     }
 
     .icon-expand {
-      line-height: 0;
       margin-left: 0.25rem;
-      text-decoration: none;
       vertical-align: sub;
+      text-decoration: none;
+      line-height: 0;
     }
   }
 
   .markdown-preview {
-    border: 1px solid #cacaca;
     font-family: $font-family-serif;
+    border: 1px solid #cacaca;
     margin-bottom: 2rem;
 
     h1,
@@ -663,10 +860,10 @@ table {
     }
 
     .fullscreen-container {
-      background: $admin-color;
-      margin-bottom: 0;
-      padding: 0.5rem 1rem;
       text-align: left;
+      background: $admin-color;
+      padding: 0.5rem 1rem;
+      margin-bottom: 0;
     }
 
     .legislation-draft-version-body {
@@ -683,8 +880,8 @@ table {
     }
 
     .markdown-preview {
-      border: 0;
       padding: 1rem;
+      border: 0;
 
       @include breakpoint(medium) {
         padding: 1rem 2rem;
@@ -693,9 +890,85 @@ table {
   }
 }
 
+// 09. Map
+// --------------
+
+.map {
+  width: 100%;
+  height: 350px;
+
+  .map-marker {
+    visibility: visible;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -5px;
+
+    .map-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50% 50% 50% 0;
+      background: #00cae9;
+      transform: rotate(-45deg);
+    }
+
+    .map-icon::after {
+      content: "";
+      width: 14px;
+      height: 14px;
+      margin: 8px 0 0 8px;
+      background: #fff;
+      position: absolute;
+      border-radius: 50%;
+    }
+  }
+
+  .map-attributtion {
+    visibility: visible;
+    height: auto;
+  }
+}
+
+.map-marker {
+  visibility: hidden;
+}
+
+.map-attributtion {
+  visibility: hidden;
+  height: 0;
+}
+
 // 10. Budgets
 // -----------------
 
+.advanced-filters {
+  margin: $line-height 0;
+
+  @include breakpoint(medium) {
+    margin: $line-height / 2 0 0;
+  }
+}
+
+.advanced-filters-content {
+  background: $highlight;
+  clear: both;
+  padding: $line-height / 2;
+  margin: $line-height 0;
+
+  .filter {
+    display: inline-block;
+    margin: 0 $line-height / 2;
+
+    label {
+      font-weight: normal;
+      margin: 0;
+    }
+  }
+
+  .button {
+    margin-top: $line-height / 2;
+  }
+}
 
 .columns-selector {
 
@@ -703,7 +976,7 @@ table {
     vertical-align: middle;
   }
 
-  &[aria-expanded="false"] {
+  &[aria-expanded='false'] {
     @include hollow-button;
 
     + .columns-selector-wrapper {
@@ -711,16 +984,16 @@ table {
     }
   }
 
-  &[aria-expanded="true"] {
+  &[aria-expanded='true'] {
     @include regular-button;
   }
 }
 
 .columns-selector-wrapper {
   background: $light-gray;
+  padding: 2rem;
   border-radius: 10px;
   margin-bottom: 1rem;
-  padding: 2rem;
 
   .column-selector-item {
     display: inline-block;

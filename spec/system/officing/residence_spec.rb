@@ -22,7 +22,7 @@ describe "Residence", :with_frozen_time do
   describe "Assigned officers" do
     before do
       create(:poll_officer_assignment, officer: officer)
-      login_through_form_as_officer(officer)
+      login_through_form_as_officer(officer.user)
       visit officing_root_path
     end
 
@@ -53,6 +53,7 @@ describe "Residence", :with_frozen_time do
     end
 
     scenario "Error on Census (document number)" do
+      initial_failed_census_calls_count = officer.failed_census_calls_count
       within("#side_menu") do
         click_link "Validate document"
       end
@@ -64,6 +65,13 @@ describe "Residence", :with_frozen_time do
       click_button "Validate document"
 
       expect(page).to have_content "The Census was unable to verify this document"
+
+      officer.reload
+      fcc = FailedCensusCall.last
+      expect(fcc).to be
+      expect(fcc.poll_officer).to eq(officer)
+      expect(officer.failed_census_calls.last).to eq(fcc)
+      expect(officer.failed_census_calls_count).to eq(initial_failed_census_calls_count + 1)
     end
 
     scenario "Error on Census (year of birth)" do
@@ -112,7 +120,7 @@ describe "Residence", :with_frozen_time do
       scenario "by default (without custom census) not display date_of_birth and postal_code" do
         Setting["feature.remote_census"] = false
 
-        login_through_form_as_officer(officer)
+        login_through_form_as_officer(officer.user)
         visit officing_root_path
 
         within("#side_menu") do
@@ -127,7 +135,7 @@ describe "Residence", :with_frozen_time do
       end
 
       scenario "with all custom census not display year_of_birth" do
-        login_through_form_as_officer(officer)
+        login_through_form_as_officer(officer.user)
         visit officing_root_path
 
         within("#side_menu") do
@@ -145,7 +153,7 @@ describe "Residence", :with_frozen_time do
     scenario "can verify voter with date_of_birth and postal_code fields" do
       mock_valid_remote_census_response
 
-      login_through_form_as_officer(officer)
+      login_through_form_as_officer(officer.user)
       visit officing_root_path
 
       within("#side_menu") do
@@ -154,7 +162,7 @@ describe "Residence", :with_frozen_time do
 
       select "DNI", from: "residence_document_type"
       fill_in "residence_document_number", with: "12345678Z"
-      fill_in "Date of birth", with: Date.new(1980, 12, 31)
+      select_date "31-December-1980", from: "residence_date_of_birth"
       fill_in "residence_postal_code", with: "28013"
 
       click_button "Validate document"

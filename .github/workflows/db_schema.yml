@@ -12,18 +12,18 @@ permissions:
 
 jobs:
   schema:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:13.16
+        image: postgres:10.10
         ports: ["5432:5432"]
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         env:
           POSTGRES_USER: consul
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: ""
     env:
       PGUSER: consul
-      PGPASSWORD: password
+      POSTGRES_HOST: postgres
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1

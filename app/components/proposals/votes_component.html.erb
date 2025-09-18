@@ -7,13 +7,14 @@
         <%= t("proposals.proposal.already_supported") %>
       </div>
     <% else %>
-      <%= button_to t("proposals.proposal.support"),
-                    vote_url,
+      <%= button_to vote_url,
                     class: "button button-support small expanded",
                     title: t("proposals.proposal.support_title"),
                     method: "post",
                     remote: true,
-                    "aria-label": support_aria_label %>
+                    "aria-label": support_aria_label do %>
+        <%= t("proposals.proposal.support") %>
+      <% end %>
     <% end %>
   </div>
 

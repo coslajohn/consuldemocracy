@@ -9,15 +9,14 @@ class Budgets::InvestmentsListComponent < ApplicationComponent
     case budget.phase
     when "accepting", "reviewing"
       budget.investments.sample(limit)
-    when "selecting", "valuating"
+    when "selecting", "valuating", "publishing_prices"
       budget.investments.feasible.sample(limit)
-    when "publishing_prices", "balloting", "reviewing_ballots"
+    when "balloting", "reviewing_ballots"
       budget.investments.selected.sample(limit)
     else
       budget.investments.none
     end
   end
-
 
   def see_all_path
     if budget.single_heading?

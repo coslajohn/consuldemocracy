@@ -3,20 +3,20 @@
   App.Polls = {
     initialize: function() {
       $(".zoom-link").on("click", function(event) {
-        var option;
-        option = $(event.target).closest("div.option");
+        var answer;
+        answer = $(event.target).closest("div.answer");
 
-        if ($(option).hasClass("medium-6")) {
-          $(option).removeClass("medium-6");
-          $(option).addClass("option-divider");
-          if (!$(option).hasClass("first")) {
-            $(option).insertBefore($(option).prev("div.option"));
+        if ($(answer).hasClass("medium-6")) {
+          $(answer).removeClass("medium-6");
+          $(answer).addClass("answer-divider");
+          if (!$(answer).hasClass("first")) {
+            $(answer).insertBefore($(answer).prev("div.answer"));
           }
         } else {
-          $(option).addClass("medium-6");
-          $(option).removeClass("option-divider");
-          if (!$(option).hasClass("first")) {
-            $(option).insertAfter($(option).next("div.option"));
+          $(answer).addClass("medium-6");
+          $(answer).removeClass("answer-divider");
+          if (!$(answer).hasClass("first")) {
+            $(answer).insertAfter($(answer).next("div.answer"));
           }
         }
       });

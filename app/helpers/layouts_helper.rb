@@ -11,6 +11,6 @@ module LayoutsHelper
   end
 
   def common_html_attributes
-    render Layout::CommonHtmlAttributesComponent.new
+    render Layout::CommonHTMLAttributesComponent.new
   end
 end

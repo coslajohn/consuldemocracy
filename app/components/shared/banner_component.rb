@@ -13,10 +13,6 @@ class Shared::BannerComponent < ApplicationComponent
                 end
   end
 
-  def render?
-    banner && (banner.title.present? || banner.description.present?)
-  end
-
   private
 
     def link

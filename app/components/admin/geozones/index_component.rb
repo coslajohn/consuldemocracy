@@ -1,7 +1,6 @@
 class Admin::Geozones::IndexComponent < ApplicationComponent
   include Header
   attr_reader :geozones
-  use_helpers :render_map
 
   def initialize(geozones)
     @geozones = geozones
@@ -26,8 +25,7 @@ class Admin::Geozones::IndexComponent < ApplicationComponent
         {
           outline_points: geozone.outline_points,
           color: geozone.color,
-          headings: [link_to(geozone.name, edit_admin_geozone_path(geozone))],
-          name: geozone.name
+          headings: [link_to(geozone.name, edit_admin_geozone_path(geozone))]
         }
       end
     end

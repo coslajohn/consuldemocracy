@@ -103,28 +103,20 @@ describe "Ballots" do
     end
 
     context "Adding and Removing Investments" do
-      scenario "Add an investment" do
+      scenario "Add a investment" do
         create(:budget_investment, :selected, heading: new_york, price: 10000, title: "Bring back King Kong")
         create(:budget_investment, :selected, heading: new_york, price: 20000, title: "Paint cabs black")
 
         visit budget_investments_path(budget, heading_id: new_york)
-
-        within("#progress_bar") do
-          expect(page).to have_css "#total_amount", exact_text: "AMOUNT SPENT €0 / TOTAL BUDGET €1,000,000"
-          expect(page).to have_css "[role=progressbar][aria-labelledby='total_amount']"
-        end
-
         add_to_ballot("Bring back King Kong")
 
-        within("#progress_bar") do
-          expect(page).to have_css("#total_amount", text: "€10,000")
-          expect(page).to have_css("#amount_available", text: "€990,000")
-        end
+        expect(page).to have_css("#total_amount", text: "€10,000")
+        expect(page).to have_css("#amount_available", text: "€990,000")
 
         within("#sidebar") do
           expect(page).to have_content "Bring back King Kong"
           expect(page).to have_content "€10,000"
-          expect(page).to have_link "Check my votes"
+          expect(page).to have_link "Submit my ballot"
         end
 
         add_to_ballot("Paint cabs black")
@@ -135,7 +127,7 @@ describe "Ballots" do
         within("#sidebar") do
           expect(page).to have_content "Paint cabs black"
           expect(page).to have_content "€20,000"
-          expect(page).to have_link "Check my votes"
+          expect(page).to have_link "Submit my ballot"
         end
       end
 
@@ -151,7 +143,7 @@ describe "Ballots" do
         within("#sidebar") do
           expect(page).to have_content investment.title
           expect(page).to have_content "€10,000"
-          expect(page).to have_link "Check my votes"
+          expect(page).to have_link "Submit my ballot"
         end
 
         within("#budget_investment_#{investment.id}") do
@@ -164,7 +156,7 @@ describe "Ballots" do
         within("#sidebar") do
           expect(page).not_to have_content investment.title
           expect(page).not_to have_content "€10,000"
-          expect(page).to have_link "Check my votes"
+          expect(page).to have_link "Submit my ballot"
         end
       end
 
@@ -276,6 +268,18 @@ describe "Ballots" do
         expect(page).to have_content("You have active votes in another heading: District 1")
       end
     end
+
+    scenario "Display progress bar after first vote" do
+      create(:budget_investment, :selected, heading: new_york, price: 10000, title: "Park expansion")
+
+      visit budget_investments_path(budget, heading_id: new_york.id)
+
+      add_to_ballot("Park expansion")
+
+      within("#progress_bar") do
+        expect(page).to have_css("#total_amount", text: "€10,000")
+      end
+    end
   end
 
   context "Groups" do
@@ -375,7 +379,7 @@ describe "Ballots" do
     expect(page).to have_content("You have voted one investment")
 
     within("#budget_investment_#{investment.id}") do
-      click_button "Remove vote"
+      click_link "Remove vote"
     end
 
     expect(page).to have_current_path(budget_ballot_path(budget))
@@ -402,7 +406,7 @@ describe "Ballots" do
     end
 
     within("#sidebar #budget_investment_#{investment1.id}_sidebar") do
-      click_button "Remove vote"
+      click_link "Remove vote"
     end
 
     expect(page).to have_css("#total_amount", text: "€20,000")
@@ -426,13 +430,13 @@ describe "Ballots" do
       add_to_ballot("Sully monument")
 
       within(".budget-heading") do
-        click_link "Check my votes"
+        click_link "Submit my ballot"
       end
 
       expect(page).to have_content("You have voted one investment")
 
       within(".ballot-list li", text: "Sully monument") do
-        click_button "Remove vote"
+        click_link "Remove vote"
       end
 
       expect(page).to have_content("You have voted 0 investments")
@@ -440,7 +444,6 @@ describe "Ballots" do
       click_link "Go back"
 
       expect(page).to have_current_path(budget_investments_path(budget, heading_id: new_york.id))
-      expect(page).to have_link "Check my votes"
     end
 
     scenario "before adding any investments" do
@@ -448,7 +451,7 @@ describe "Ballots" do
       visit budget_investments_path(budget, heading_id: new_york.id)
 
       within(".budget-heading") do
-        click_link "Check my votes"
+        click_link "Submit my ballot"
       end
 
       expect(page).to have_content("You have voted 0 investments")
@@ -456,7 +459,6 @@ describe "Ballots" do
       click_link "Go back"
 
       expect(page).to have_current_path(budget_investments_path(budget, heading_id: new_york.id))
-      expect(page).to have_link "Check my votes"
     end
   end
 
@@ -619,7 +621,7 @@ describe "Ballots" do
       end
 
       within("#budget_investment_#{bi1.id}_sidebar") do
-        click_button "Remove vote"
+        click_link "Remove vote"
       end
 
       expect(page).not_to have_css "#budget_investment_#{bi1.id}_sidebar"
@@ -693,18 +695,15 @@ describe "Ballots" do
       login_as(user)
       visit budget_investments_path(budget_hide_money, heading_id: heading_no_price.id)
 
-      expect(page).not_to have_content "Your ballot"
-
       within("#sidebar") do
         expect(page).to have_content investment_1.title
         expect(page).to have_content investment_2.title
         expect(page).not_to have_content investment_1.price
         expect(page).not_to have_content investment_2.price
         expect(page).not_to have_content "€"
-        click_link "Check my votes"
+        click_link "Submit my ballot"
       end
 
-      expect(page).to have_content "Your ballot"
       expect(page).to have_content investment_1.title
       expect(page).to have_content investment_2.title
       expect(page).not_to have_content investment_1.price

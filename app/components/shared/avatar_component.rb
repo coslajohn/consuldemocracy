@@ -1,5 +1,6 @@
 class Shared::AvatarComponent < ApplicationComponent
   attr_reader :record, :given_options
+  use_helpers :avatar_image
 
   def initialize(record, **given_options)
     @record = record
@@ -9,7 +10,7 @@ class Shared::AvatarComponent < ApplicationComponent
   private
 
     def default_options
-      { background_color: colors[seed % colors.size], size: 100, color: "white" }
+      { background_color: colors[seed % colors.size] }
     end
 
     def options
@@ -25,54 +26,5 @@ class Shared::AvatarComponent < ApplicationComponent
 
     def seed
       record.id
-    end
-
-    def size
-      options[:size]
-    end
-
-    def font_size
-      (size * 0.6).round
-    end
-
-    def background_color
-      options[:background_color]
-    end
-
-    def color
-      options[:color]
-    end
-
-    def svg_options
-      {
-        xmlns: "http://www.w3.org/2000/svg",
-        width: size,
-        height: size,
-        role: "img",
-        "aria-hidden": true,
-        style: "background-color: #{background_color}",
-        class: "initialjs-avatar #{options[:class]}".strip
-      }
-    end
-
-    def text_options
-      {
-        x: "50%",
-        y: "50%",
-        dy: "0.35em",
-        "text-anchor": "middle",
-        fill: color,
-        style: "font-size: #{font_size}px"
-      }
-    end
-
-    def initial
-      record.name.first.upcase
-    end
-
-    def avatar_image
-      tag.svg(**svg_options) do
-        tag.text(initial, **text_options)
-      end
     end
 end

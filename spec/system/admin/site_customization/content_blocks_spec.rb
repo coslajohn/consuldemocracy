@@ -2,19 +2,13 @@ require "rails_helper"
 
 describe "Admin custom content blocks", :admin do
   scenario "Index" do
-    block = create(:site_customization_content_block, name: "top_links")
-    heading_block = create(:heading_content_block, heading: create(:budget_heading, name: "Reforestation"))
+    block = create(:site_customization_content_block)
+    heading_block = create(:heading_content_block)
     visit admin_site_customization_content_blocks_path
 
-    within "tr", text: "top_links" do
-      expect(page).to have_link "Edit"
-    end
-
-    within "tr", text: "Reforestation" do
-      expect(page).to have_link "Edit"
-    end
-
+    expect(page).to have_content(block.name)
     expect(page).to have_content(block.body)
+    expect(page).to have_content(heading_block.heading.name)
     expect(page).to have_content(heading_block.body)
   end
 
@@ -23,7 +17,7 @@ describe "Admin custom content blocks", :admin do
       visit admin_root_path
 
       within("#side_menu") do
-        click_button "Site content"
+        click_link "Site content"
         click_link "Custom content blocks"
       end
 
@@ -48,7 +42,7 @@ describe "Admin custom content blocks", :admin do
       visit admin_root_path
 
       within("#side_menu") do
-        click_button "Site content"
+        click_link "Site content"
         click_link "Custom content blocks"
       end
 
@@ -75,11 +69,11 @@ describe "Admin custom content blocks", :admin do
       visit admin_root_path
 
       within("#side_menu") do
-        click_button "Site content"
+        click_link "Site content"
         click_link "Custom content blocks"
       end
 
-      within("tr", text: "top_links (en)") { click_link "Edit" }
+      click_link "top_links (en)"
 
       fill_in "site_customization_content_block_body", with: "Some other custom content"
       click_button "Update Custom content block"
@@ -109,9 +103,7 @@ describe "Admin custom content blocks", :admin do
       block = create(:site_customization_content_block)
       visit edit_admin_site_customization_content_block_path(block)
 
-      accept_confirm("Are you sure? This action will delete \"#{block.name}\" and can't be undone.") do
-        click_button "Delete block"
-      end
+      click_link "Delete block"
 
       expect(page).not_to have_content("#{block.name} (#{block.locale})")
       expect(page).not_to have_content(block.body)

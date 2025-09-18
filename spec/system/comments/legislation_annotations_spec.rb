@@ -2,6 +2,7 @@ require "rails_helper"
 
 describe "Commenting legislation annotations" do
   let(:user) { create(:user) }
+  let(:annotation) { create(:legislation_annotation, author: user) }
 
   describe "Merged comment threads" do
     let!(:draft_version) { create(:legislation_draft_version, :published) }
@@ -35,12 +36,13 @@ describe "Commenting legislation annotations" do
     end
 
     scenario "View comments of annotations in an included range" do
-      click_link "2 comment"
+      within("#annotation-link") do
+        find(".icon-expand").click
+      end
 
-      expect(page).to have_content "Comments about"
-      expect(page).to have_css ".comment", count: 2
-      expect(page).to have_content "my annotation"
-      expect(page).to have_content "my other annotation"
+      expect(page).to have_css(".comment", count: 2)
+      expect(page).to have_content("my annotation")
+      expect(page).to have_content("my other annotation")
     end
 
     scenario "Reply on a single annotation thread and display it in the merged annotation thread" do
@@ -69,16 +71,20 @@ describe "Commenting legislation annotations" do
         expect(page).to have_content "my other annotation"
       end
 
-      click_link "2 comment"
+      within("#annotation-link") do
+        find(".icon-expand").click
+      end
 
-      expect(page).to have_css ".comment", count: 3
-      expect(page).to have_content "my annotation"
-      expect(page).to have_content "my other annotation"
-      expect(page).to have_content "replying in single annotation thread"
+      expect(page).to have_css(".comment", count: 3)
+      expect(page).to have_content("my annotation")
+      expect(page).to have_content("my other annotation")
+      expect(page).to have_content("replying in single annotation thread")
     end
 
     scenario "Reply on a multiple annotation thread and display it in the single annotation thread" do
-      click_link "2 comment"
+      within("#annotation-link") do
+        find(".icon-expand").click
+      end
 
       within("#comment_#{comment2.id}") do
         click_link "Reply"

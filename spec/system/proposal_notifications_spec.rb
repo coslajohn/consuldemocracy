@@ -185,6 +185,7 @@ describe "Proposal Notifications" do
       user3 = create(:user, votables: [proposal])
 
       login_as(author)
+      visit root_path
 
       visit new_proposal_notification_path(proposal_id: proposal.id)
 
@@ -280,14 +281,26 @@ describe "Proposal Notifications" do
       expect(page).to have_css ".notification", count: 0
     end
 
-    scenario "Hidden proposal" do
+    scenario "Proposal hidden" do
       author = create(:user)
       user = create(:user)
       proposal = create(:proposal, author: author, voters: [user], followers: [user])
-      notification = create(:proposal_notification, author: author, proposal: proposal)
-      proposal.notify_users(notification)
+
+      login_as(author)
+      visit root_path
+
+      visit new_proposal_notification_path(proposal_id: proposal.id)
+
+      fill_in "proposal_notification_title", with: "Thank you for supporting my proposal"
+      fill_in "proposal_notification_body", with: "Please share it with " \
+                                                  "others so we can make it happen!"
+      click_button "Send notification"
+
+      expect(page).to have_content "Your message has been sent correctly."
+
       proposal.hide
 
+      logout
       login_as user
       visit root_path
 

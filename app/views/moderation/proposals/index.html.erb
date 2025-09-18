@@ -1,5 +1,5 @@
 <%= render Moderation::Shared::IndexComponent.new(@proposals) do %>
-  <table>
+  <table class="clear">
     <thead>
       <tr>
         <th><%= t("moderation.proposals.index.headers.proposal") %></th>
@@ -24,11 +24,7 @@
             </div>
           </td>
           <td class="text-center">
-            <%= check_box_tag "proposal_ids[]",
-                              proposal.id,
-                              nil,
-                              id: "#{dom_id(proposal)}_check",
-                              "aria-label": proposal.title %>
+            <%= check_box_tag "proposal_ids[]", proposal.id, nil, id: "#{dom_id(proposal)}_check" %>
           </td>
         </tr>
       <% end %>

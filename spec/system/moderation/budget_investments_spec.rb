@@ -53,9 +53,14 @@ describe "Moderate budget investments" do
       describe "When an investment has been selected for moderation" do
         before do
           visit moderation_budget_investments_path
-          click_link "All"
 
-          check investment.title
+          within(".menu.simple") do
+            click_link "All"
+          end
+
+          within("#investment_#{investment.id}") do
+            check "budget_investment_#{investment.id}_check"
+          end
         end
 
         scenario "Hide the investment" do
@@ -103,17 +108,16 @@ describe "Moderate budget investments" do
         create_list(:budget_investment, 2, heading: heading, author: create(:user))
 
         visit moderation_budget_investments_path
-        click_link "All"
 
-        expect(page).to have_field type: :checkbox, count: 3
+        within(".js-check") { click_link "All" }
 
-        within(".check-all-none") { click_button "Select all" }
+        expect(all("input[type=checkbox]")).to all(be_checked)
 
-        expect(all(:checkbox)).to all(be_checked)
+        within(".js-check") { click_link "None" }
 
-        within(".check-all-none") { click_button "Select none" }
-
-        all(:checkbox).each { |checkbox| expect(checkbox).not_to be_checked }
+        all("input[type=checkbox]").each do |checkbox|
+          expect(checkbox).not_to be_checked
+        end
       end
 
       scenario "remembering page, filter and order" do
@@ -135,24 +139,34 @@ describe "Moderate budget investments" do
 
     scenario "Current filter is properly highlighted" do
       visit moderation_budget_investments_path
+
       expect(page).not_to have_link("Pending")
       expect(page).to have_link("All")
       expect(page).to have_link("Marked as viewed")
 
       visit moderation_budget_investments_path(filter: "all")
-      expect(page).not_to have_link("All")
-      expect(page).to have_link("Pending")
-      expect(page).to have_link("Marked as viewed")
+
+      within(".menu.simple") do
+        expect(page).not_to have_link("All")
+        expect(page).to have_link("Pending")
+        expect(page).to have_link("Marked as viewed")
+      end
 
       visit moderation_budget_investments_path(filter: "pending_flag_review")
-      expect(page).to have_link("All")
-      expect(page).not_to have_link("Pending")
-      expect(page).to have_link("Marked as viewed")
+
+      within(".menu.simple") do
+        expect(page).to have_link("All")
+        expect(page).not_to have_link("Pending")
+        expect(page).to have_link("Marked as viewed")
+      end
 
       visit moderation_budget_investments_path(filter: "with_ignored_flag")
-      expect(page).to have_link("All")
-      expect(page).to have_link("Pending")
-      expect(page).not_to have_link("Marked as viewed")
+
+      within(".menu.simple") do
+        expect(page).to have_link("All")
+        expect(page).to have_link("Pending")
+        expect(page).not_to have_link("Marked as viewed")
+      end
     end
 
     scenario "Filtering investments" do

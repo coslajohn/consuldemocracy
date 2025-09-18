@@ -1,5 +1,5 @@
 class Tenant < ApplicationRecord
-  enum :schema_type, { subdomain: 0, domain: 1 }
+  enum schema_type: %w[subdomain domain]
 
   validates :schema,
             presence: true,
@@ -112,14 +112,10 @@ class Tenant < ApplicationRecord
   end
 
   def self.subfolder_path
-    subfolder_path_for(current_schema)
-  end
-
-  def self.subfolder_path_for(schema)
-    if schema == "public"
+    if default?
       ""
     else
-      File.join("tenants", schema)
+      File.join("tenants", current_schema)
     end
   end
 
@@ -182,15 +178,12 @@ class Tenant < ApplicationRecord
     end
 
     def rename_storage
-      service = ActiveStorage::Blob.service
+      return unless ActiveStorage::Blob.service.is_a?(ActiveStorage::Service::TenantDiskService)
 
-      return unless service.respond_to?(:tenant_root_for)
-
-      old_storage = service.tenant_root_for(schema_before_last_save)
-
+      old_storage = File.join(ActiveStorage::Blob.service.root, "tenants", schema_before_last_save)
       return unless File.directory?(old_storage)
 
-      new_storage = service.tenant_root_for(schema)
+      new_storage = File.join(ActiveStorage::Blob.service.root, "tenants", schema)
       File.rename(old_storage, new_storage)
     end
 

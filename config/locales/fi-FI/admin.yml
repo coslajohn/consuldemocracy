@@ -90,6 +90,7 @@ fi:
         administrator_filter_all: Kaikki järjestelmänvalvojat
         tags_filter_all: Kaikki tunnisteet
         advanced_filters: Edistyneet suodattimet
+        placeholder: Hae projekteja
         filters:
           all: Kaikki
           selected: Valittu
@@ -102,6 +103,7 @@ fi:
         feasibility:
           unfeasible: "Toteuttamiskelvoton"
         selected: "Valittu"
+        select: "Valitse"
         list:
           id: ID
           admin: Järjestelmänvalvoja
@@ -292,6 +294,7 @@ fi:
         form:
           close_text_editor: Sulje tekstieditori
         index:
+          delete: Poista
           preview: Esikatselu
         new:
           back: Takaisin
@@ -308,6 +311,7 @@ fi:
         index:
           back: Takaisin
           create: Luo kysymys
+          delete: Poista
         new:
           back: Takaisin
           submit_button: Luo kysymys
@@ -423,9 +427,13 @@ fi:
         questions_tab: Kysymykset
     questions:
       index:
+        title: "Kysymykset"
         create: "Luo kysymys"
+        questions_tab: "Kysymykset"
         create_question: "Luo kysymys"
         table_proposal: "Ehdotus"
+        table_question: "Kysymys"
+        table_poll: "Kysely"
       new:
         title_proposal: "Luo kysymys"
       answers:
@@ -434,6 +442,7 @@ fi:
       show:
         author: Tekijä
         question: Kysymys
+        video_url: Ulkoinen video
         answers:
           title: Vastaus
           description: Kuvaus
@@ -481,6 +490,7 @@ fi:
         title: Ehdotukset
         id: ID
         author: Tekijä
+        select: Valitse
         selected: Valittu
         milestones: Tavoitteet
     hidden_proposals:
@@ -577,6 +587,7 @@ fi:
       images:
         index:
           update: Päivitä
+          delete: Poista
           image: Kuva
         destroy:
           notice: Kuva poistettu onnistuneesti

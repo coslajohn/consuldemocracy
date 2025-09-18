@@ -22,14 +22,13 @@ shared_examples "notifiable in-app" do |factory_name|
     click_link "You have a new notification"
 
     expect(page).to have_css ".notification", count: 1
-    expect(page).to have_link text: "Someone commented on", href: notification_path(notification)
+    expect(page).to have_content "Someone commented on"
+    expect(page).to have_xpath "//a[@href='#{notification_path(notification)}']"
   end
 
   scenario "Multiple users commented on my notifiable" do
-    users = 3.times.map { create(:user, :verified) }
-
-    users.each.with_index do |user, n|
-      login_as(user)
+    3.times do |n|
+      login_as(create(:user, :verified))
 
       visit path_for(notifiable)
 
@@ -45,28 +44,40 @@ shared_examples "notifiable in-app" do |factory_name|
     visit notifications_path
 
     expect(page).to have_css ".notification", count: 1
-    expect(page).to have_link text: "There are 3 new comments on"
+    expect(page).to have_content "There are 3 new comments on"
+    expect(page).to have_xpath "//a[@href='#{notification_path(Notification.last)}']"
   end
 
   scenario "A user replied to my comment" do
     comment = create(:comment, commentable: notifiable, user: author)
 
-    reply_to(comment, with: "I replied to your comment", replier: create(:user, :verified))
+    login_as(create(:user, :verified))
+    visit path_for(notifiable)
+
+    click_link "Reply"
+    within "#js-comment-form-comment_#{comment.id}" do
+      fill_in comment_body(notifiable), with: "I replied to your comment"
+      click_button "Publish reply"
+    end
+
+    within "#comment_#{comment.id}" do
+      expect(page).to have_content "I replied to your comment"
+    end
 
     logout
     login_as author
     visit notifications_path
 
     expect(page).to have_css ".notification", count: 1
-    expect(page).to have_link text: "Someone replied to your comment on"
+    expect(page).to have_content "Someone replied to your comment on"
+    expect(page).to have_xpath "//a[@href='#{notification_path(Notification.last)}']"
   end
 
   scenario "Multiple replies to my comment" do
     comment = create(:comment, commentable: notifiable, user: author)
-    users = 3.times.map { create(:user, :verified) }
 
-    users.each.with_index do |user, n|
-      login_as(user)
+    3.times do |n|
+      login_as(create(:user, :verified))
       visit path_for(notifiable)
 
       within("#comment_#{comment.id}_reply") { click_link "Reply" }
@@ -85,7 +96,8 @@ shared_examples "notifiable in-app" do |factory_name|
     visit notifications_path
 
     expect(page).to have_css ".notification", count: 1
-    expect(page).to have_link text: "There are 3 new replies to your comment on"
+    expect(page).to have_content "There are 3 new replies to your comment on"
+    expect(page).to have_xpath "//a[@href='#{notification_path(Notification.last)}']"
   end
 
   scenario "Author commented on his own notifiable" do
@@ -108,7 +120,18 @@ shared_examples "notifiable in-app" do |factory_name|
   scenario "Author replied to his own comment" do
     comment = create(:comment, commentable: notifiable, user: author)
 
-    reply_to(comment, with: "I replied to my own comment", replier: author)
+    login_as author
+    visit path_for(notifiable)
+
+    click_link "Reply"
+    within "#js-comment-form-comment_#{comment.id}" do
+      fill_in comment_body(notifiable), with: "I replied to my own comment"
+      click_button "Publish reply"
+    end
+
+    within "#comment_#{comment.id}" do
+      expect(page).to have_content "I replied to my own comment"
+    end
 
     within("#notifications") do
       click_link "You don't have new notifications"

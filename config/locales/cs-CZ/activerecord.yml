@@ -382,6 +382,7 @@ cs:
         public_interests: "Udržet prvky, které sleduji, veřejné"
         recommended_debates: "Zobrazit doporučení k debatám"
         recommended_proposals: "Zobrazit doporučení k návrhům"
+        redeemable_code: "Verification code received via email"
       direct_message:
         title: "Předmět"
         body: "Zpráva"
@@ -547,14 +548,14 @@ cs:
       image:
         title: Předmět
         attachment: "Attachment"
-      poll/question/option:
+      poll/question/answer:
         title: Odpověď
         description: Popis
-      poll/question/option/translation:
-        title: Odpověď
+      poll/question/answer/translation:
+        title: Answer
         description: "Popis (volitelné)"
-      poll/question/option/video:
-        title: Nadpis
+      poll/question/answer/video:
+        title: Předmět
         url: Externí video
       newsletter:
         segment_recipient: Příjemci
@@ -576,7 +577,6 @@ cs:
         link_text: Link text
         link_url: Link URL
         columns: Počet sloupců
-        order: Pozice
       widget/card/translation:
         label: Label (optional)
         title: Předmět

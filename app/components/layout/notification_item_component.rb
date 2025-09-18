@@ -5,10 +5,6 @@ class Layout::NotificationItemComponent < ApplicationComponent
     @user = user
   end
 
-  def render?
-    user.present? && !Rails.application.multitenancy_management_mode?
-  end
-
   private
 
     def text

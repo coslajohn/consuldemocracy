@@ -32,12 +32,8 @@ class SubscriptionsController < ApplicationController
 
     def set_user_locale(&action)
       if params[:locale].blank?
-        session[:locale] = find_locale.to_s
+        session[:locale] = I18n.available_locales.find { |locale| locale == @user.locale&.to_sym }
       end
       I18n.with_locale(session[:locale], &action)
-    end
-
-    def find_locale
-      Setting.enabled_locales.find { |locale| locale == @user.locale&.to_sym } || I18n.locale
     end
 end

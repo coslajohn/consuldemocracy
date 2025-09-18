@@ -80,7 +80,7 @@ describe "Admin" do
     within("#admin_menu") do
       expect(page).to have_link "Participatory budgets"
 
-      click_button "Site content"
+      click_link "Site content"
 
       expect(page).to have_link "Participatory budgets"
     end

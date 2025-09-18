@@ -4,28 +4,24 @@
 
 module Ahoy
   class DataSource
-    def self.build(&block)
-      new.tap { |data_source| block.call(data_source) }.build
-    end
-
     # Adds a collection with the datasource
     # Name is the name of the collection and will be showed in the
     # chart
     def add(name, collection)
       collections.push data: collection, name: name
-      dates.merge(collection.keys)
+      collection.each_key { |key| add_key key }
     end
 
     def build
       data = { x: [] }
-      dates.sort.each do |date|
+      shared_keys.each do |k|
         # Add the key with a valid date format
-        data[:x].push date.strftime("%Y-%m-%d")
+        data[:x].push k.strftime("%Y-%m-%d")
 
         # Add the value for each column, or 0 if not present
         collections.each do |col|
           data[col[:name]] ||= []
-          count = col[:data][date] || 0
+          count = col[:data][k] || 0
           data[col[:name]].push count
         end
       end
@@ -39,8 +35,12 @@ module Ahoy
         @collections ||= []
       end
 
-      def dates
-        @dates ||= Set.new
+      def shared_keys
+        @shared_keys ||= []
+      end
+
+      def add_key(key)
+        shared_keys.push(key) unless shared_keys.include? key
       end
   end
 end

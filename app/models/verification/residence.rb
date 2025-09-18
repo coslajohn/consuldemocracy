@@ -1,10 +1,9 @@
 class Verification::Residence
   include ActiveModel::Model
-  include ActiveModel::Attributes
+  include ActiveModel::Dates
   include ActiveModel::Validations::Callbacks
 
-  attribute :date_of_birth, :date
-  attr_accessor :user, :document_number, :document_type, :postal_code, :terms_of_service
+  attr_accessor :user, :document_number, :document_type, :date_of_birth, :postal_code, :terms_of_service
 
   validates :document_number, presence: true
   validates :document_type, presence: true
@@ -19,6 +18,8 @@ class Verification::Residence
   validate :local_residence
 
   def initialize(attrs = {})
+    self.date_of_birth = parse_date("date_of_birth", attrs)
+    attrs = remove_date("date_of_birth", attrs)
     super
     clean_document_number
   end

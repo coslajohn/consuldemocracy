@@ -6,18 +6,19 @@ class Admin::BudgetInvestmentsController < Admin::BaseController
   feature_flag :budgets
 
   has_orders %w[oldest], only: [:show, :edit]
-  has_filters %w[all], only: :index
+  has_filters %w[all], only: [:index, :toggle_selection]
 
   before_action :load_budget
-  before_action :load_investment, except: [:index]
+  before_action :load_investment, only: [:show, :edit, :update, :toggle_selection]
   before_action :load_ballot, only: [:show, :index]
   before_action :parse_valuation_filters
-  before_action :load_investments, only: :index
+  before_action :load_investments, only: [:index, :toggle_selection]
 
   def index
     load_tags
     respond_to do |format|
       format.html
+      format.js
       format.csv do
         send_data Budget::Investment::Exporter.new(@investments).to_csv,
                   filename: "budget_investments.csv"
@@ -39,77 +40,32 @@ class Admin::BudgetInvestmentsController < Admin::BaseController
   def update
     authorize! :admin_update, @investment
 
-    if @investment.update(budget_investment_params)
-      redirect_to admin_budget_budget_investment_path(@budget,
-                                                      @investment,
-                                                      Budget::Investment.filter_params(params).to_h),
-                  notice: t("flash.actions.update.budget_investment")
-    else
-      load_staff
-      load_valuator_groups
-      load_tags
-      render :edit
+    respond_to do |format|
+      format.html do
+        if @investment.update(budget_investment_params)
+          redirect_to admin_budget_budget_investment_path(@budget,
+                                                          @investment,
+                                                          Budget::Investment.filter_params(params).to_h),
+                      notice: t("flash.actions.update.budget_investment")
+        else
+          load_staff
+          load_valuator_groups
+          load_tags
+          render :edit
+        end
+      end
+
+      format.json do
+        @investment.update!(budget_investment_params)
+      end
     end
   end
 
-  def show_to_valuators
-    authorize! :admin_update, @investment
-    @investment.update!(visible_to_valuators: true)
-
-    respond_to do |format|
-      format.html { redirect_to request.referer, notice: t("flash.actions.update.budget_investment") }
-      format.js { render :toggle_visible_to_valuators }
-    end
-  end
-
-  def hide_from_valuators
-    authorize! :admin_update, @investment
-    @investment.update!(visible_to_valuators: false)
-
-    respond_to do |format|
-      format.html { redirect_to request.referer, notice: t("flash.actions.update.budget_investment") }
-      format.js { render :toggle_visible_to_valuators }
-    end
-  end
-
-  def select
-    authorize! :select, @investment
-    @investment.update!(selected: true)
-
-    respond_to do |format|
-      format.html { redirect_to request.referer, notice: t("flash.actions.update.budget_investment") }
-      format.js { render :toggle_selection }
-    end
-  end
-
-  def deselect
-    authorize! :deselect, @investment
-    @investment.update!(selected: false)
-
-    respond_to do |format|
-      format.html { redirect_to request.referer, notice: t("flash.actions.update.budget_investment") }
-      format.js { render :toggle_selection }
-    end
-  end
-
-  def mark_as_winner
-    authorize! :mark_as_winner, @investment
-    @investment.update!(winner: true)
-
-    respond_to do |format|
-      format.html { redirect_to request.referer, notice: t("flash.actions.update.budget_investment") }
-      format.js { render :toggle_winner }
-    end
-  end
-
-  def unmark_as_winner
-    authorize! :unmark_as_winner, @investment
-    @investment.update!(winner: false)
-
-    respond_to do |format|
-      format.html { redirect_to request.referer, notice: t("flash.actions.update.budget_investment") }
-      format.js { render :toggle_winner }
-    end
+  def toggle_selection
+    authorize! :toggle_selection, @investment
+    @investment.toggle :selected
+    @investment.save!
+    load_investments
   end
 
   private
@@ -140,7 +96,7 @@ class Admin::BudgetInvestmentsController < Admin::BaseController
 
     def allowed_params
       attributes = [:external_url, :heading_id, :administrator_id, :tag_list,
-                    :valuation_tag_list, :incompatible, :selected,
+                    :valuation_tag_list, :incompatible, :visible_to_valuators, :selected,
                     :milestone_tag_list, valuator_ids: [], valuator_group_ids: []]
       [*attributes, translation_params(Budget::Investment)]
     end

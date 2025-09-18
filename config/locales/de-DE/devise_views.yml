@@ -60,7 +60,7 @@ de:
         title: Passwort vergessen?
     sessions:
       new:
-        remember_me: Angemeldet bleiben
+        remember_me: Passwort speichern
         submit: Eingabe
         title: Anmelden
     shared:

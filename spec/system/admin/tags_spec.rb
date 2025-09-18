@@ -24,9 +24,7 @@ describe "Admin tags", :admin do
       click_button "Create topic"
     end
 
-    within("table") { expect(page).to have_content "important issues" }
-
-    refresh
+    visit admin_tags_path
 
     expect(page).to have_content "important issues"
   end

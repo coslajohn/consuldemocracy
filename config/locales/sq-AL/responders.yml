@@ -7,6 +7,9 @@ sq:
         direct_message: "Mesazhi është dërguar me sukses."
         poll: "Sondazhi u krijua me sukses"
         poll_booth: "Kabina u krijua me sukses."
+        poll_question_answer: "Përgjigja është krijuar me sukses"
+        poll_question_answer_video: "VIdeo u krijua me sukses"
+        poll_question_answer_image: "Imazhi u ngarkua me sukses"
         proposal: "Propozimi u krijua me sukses"
         proposal_notification: "Mesazhi është dërguar me sukses."
         budget_investment: "\nInvestimet Buxhetore janë krijuar me sukses."
@@ -28,4 +31,5 @@ sq:
       destroy:
         budget_investment: "\nProjekti i investimeve u fshi me sukses."
         topic: "Tematika u fshi me sukses"
+        poll_question_answer_video: "\nPërgjigjja e videos u fshi me sukses."
         valuator_group: "\nGrupi i vlerësuesve u fshi me sukses"

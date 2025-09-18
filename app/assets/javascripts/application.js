@@ -50,14 +50,15 @@
 //= require jquery-ui/ui/i18n/datepicker-en-GB
 //= require jquery-ui/ui/widgets/autocomplete
 //= require jquery-ui/ui/widgets/sortable
-//= require blueimp-file-upload/js/jquery.iframe-transport
-//= require blueimp-file-upload/js/jquery.fileupload
-//= require foundation-sites
+//= require jquery-fileupload/basic
+//= require foundation
 //= require turbolinks
 //= require turbolinks_anchors
 //= require ckeditor/loader
 //= require_directory ./ckeditor
 //= require social-share-button
+//= require initial
+//= require ahoy
 //= require app
 //= require check_all_none
 //= require comments
@@ -73,6 +74,7 @@
 //= require annotator
 //= require jquery.amsify.suggestags
 //= require tags
+//= require users
 //= require participation_not_allowed
 //= require advanced_search
 //= require registration_form
@@ -84,11 +86,11 @@
 //= require banners
 //= require social_share
 //= require checkbox_toggle
-//= require markdown-it/dist/markdown-it
+//= require markdown-it
 //= require markdown_editor
 //= require html_editor
 //= require cocoon
-//= require options
+//= require answers
 //= require questions
 //= require legislation_admin
 //= require legislation
@@ -101,6 +103,7 @@
 //= require imageable
 //= require tree_navigator
 //= require tag_autocomplete
+//= require polls_admin
 //= require leaflet/dist/leaflet
 //= require leaflet.markercluster/dist/leaflet.markercluster
 //= require map
@@ -108,12 +111,13 @@
 //= require sortable
 //= require table_sortable
 //= require investment_report_alert
+//= require send_newsletter_alert
 //= require managers
 //= require i18n
 //= require globalize
+//= require send_admin_notification_alert
 //= require settings
 //= require cookies
-//= require cookies_consent
 //= require columns_selector
 //= require budget_edit_associations
 //= require budget_hide_money
@@ -122,15 +126,16 @@
 //= require_tree ./admin
 //= require_tree ./sdg
 //= require_tree ./sdg_management
-//= require_tree ./custom
 //= require custom
+//= require_tree ./custom
 
 var initialize_modules = function() {
   "use strict";
 
-  App.Options.initialize();
+  App.Answers.initialize();
   App.Questions.initialize();
   App.Comments.initialize();
+  App.Users.initialize();
   App.ParticipationNotAllowed.initialize();
   App.Tags.initialize();
   App.FoundationExtras.initialize();
@@ -157,31 +162,30 @@ var initialize_modules = function() {
   App.Documentable.initialize();
   App.Imageable.initialize();
   App.TagAutocomplete.initialize();
+  App.PollsAdmin.initialize();
   App.Map.initialize();
   App.Polls.initialize();
   App.Sortable.initialize();
   App.TableSortable.initialize();
   App.InvestmentReportAlert.initialize();
+  App.SendNewsletterAlert.initialize();
   App.Managers.initialize();
   App.Globalize.initialize();
+  App.SendAdminNotificationAlert.initialize();
   App.Settings.initialize();
   if ($("#js-columns-selector").length) {
     App.ColumnsSelector.initialize();
   }
   App.AdminBudgetsWizardCreationStep.initialize();
-  App.AdminDashboardActionsForm.initialize();
   App.AdminMachineLearningScripts.initialize();
-  App.AdminPollShiftsForm.initialize();
   App.AdminTenantsForm.initialize();
   App.AdminVotationTypesFields.initialize();
-  App.AdminMenu.initialize();
   App.BudgetEditAssociations.initialize();
   App.BudgetHideMoney.initialize();
   App.Datepicker.initialize();
   App.SDGRelatedListSelector.initialize();
   App.SDGManagementRelationSearch.initialize();
   App.AuthenticityTokenRefresh.initialize();
-  App.CookiesConsent.initialize();
 };
 
 var destroy_non_idempotent_modules = function() {

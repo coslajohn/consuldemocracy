@@ -1,5 +1,3 @@
-@use "sass:color";
-
 %font-icon {
   @extend %fa-icon;
   font-family: "Font Awesome 5 Free";
@@ -7,7 +5,7 @@
 }
 
 %svg-icon {
-  @supports (mask-image: url("")) and (--custom-property-name: custom-property-value) {
+  @supports (mask-image: url()) and (--custom-property-name: custom-property-value) {
     background: currentcolor;
     content: "" !important;
     height: 1em;
@@ -1541,7 +1539,7 @@ $font-awesome-icons: (
   .destroy-officer-link,
   .reject-link,
   .confirm-hide-link {
-    color: color.adjust($alert-color, $lightness: -5%);
+    color: darken($alert-color, 5%);
   }
 
   .show-link,
@@ -1573,7 +1571,7 @@ $font-awesome-icons: (
 
   .restore-link,
   .investments-link {
-    color: color.adjust($warning-color, $lightness: -20%);
+    color: darken($warning-color, 20%);
 
     &:not(:hover, :focus)::before {
       color: $warning-color;
@@ -1599,7 +1597,7 @@ $font-awesome-icons: (
   }
 
   .configure-link,
-  .options-link {
+  .answers-link {
     @include has-fa-icon(tools, solid);
   }
 

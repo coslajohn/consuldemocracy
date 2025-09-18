@@ -16,7 +16,7 @@ describe "Moderate comments" do
     end
 
     login_as(citizen)
-    refresh
+    visit debate_path(comment.commentable)
 
     expect(page).to have_css(".comment", count: 1)
     expect(page).not_to have_content("This comment has been deleted")
@@ -74,7 +74,9 @@ describe "Moderate comments" do
 
         before do
           visit moderation_comments_path
-          click_link "All"
+          within(".menu.simple") do
+            click_link "All"
+          end
 
           within("#comment_#{comment.id}") do
             check "comment_#{comment.id}_check"
@@ -126,17 +128,16 @@ describe "Moderate comments" do
         create_list(:comment, 2)
 
         visit moderation_comments_path
-        click_link "All"
 
-        expect(page).to have_field type: :checkbox, count: 2
+        within(".js-check") { click_link "All" }
 
-        within(".check-all-none") { click_button "Select all" }
+        expect(all("input[type=checkbox]")).to all(be_checked)
 
-        expect(all(:checkbox)).to all(be_checked)
+        within(".js-check") { click_link "None" }
 
-        within(".check-all-none") { click_button "Select none" }
-
-        all(:checkbox).each { |checkbox| expect(checkbox).not_to be_checked }
+        all("input[type=checkbox]").each do |checkbox|
+          expect(checkbox).not_to be_checked
+        end
       end
 
       scenario "remembering page, filter and order" do
@@ -163,19 +164,25 @@ describe "Moderate comments" do
       expect(page).to have_link("Marked as viewed")
 
       visit moderation_comments_path(filter: "all")
-      expect(page).not_to have_link("All")
-      expect(page).to have_link("Pending")
-      expect(page).to have_link("Marked as viewed")
+      within(".menu.simple") do
+        expect(page).not_to have_link("All")
+        expect(page).to have_link("Pending")
+        expect(page).to have_link("Marked as viewed")
+      end
 
       visit moderation_comments_path(filter: "pending_flag_review")
-      expect(page).to have_link("All")
-      expect(page).not_to have_link("Pending")
-      expect(page).to have_link("Marked as viewed")
+      within(".menu.simple") do
+        expect(page).to have_link("All")
+        expect(page).not_to have_link("Pending")
+        expect(page).to have_link("Marked as viewed")
+      end
 
       visit moderation_comments_path(filter: "with_ignored_flag")
-      expect(page).to have_link("All")
-      expect(page).to have_link("Pending")
-      expect(page).not_to have_link("Marked as viewed")
+      within(".menu.simple") do
+        expect(page).to have_link("All")
+        expect(page).to have_link("Pending")
+        expect(page).not_to have_link("Marked as viewed")
+      end
     end
 
     scenario "Filtering comments" do

@@ -7,6 +7,9 @@ uk-UA:
         direct_message: "Ваше повідомлення успішно надіслане."
         poll: "Опитування успішно створене."
         poll_booth: "Кабінка успішно створена."
+        poll_question_answer: "Відповідь успішно створено"
+        poll_question_answer_video: "Відео успішно створено"
+        poll_question_answer_image: "Зображення успішно завантажено"
         proposal: "Пропозицію успішно подано."
         proposal_notification: "Ваше повідомлення успішно надіслане."
         budget_investment: "Бюджетна інвестиція успішно створена."
@@ -29,4 +32,5 @@ uk-UA:
       destroy:
         budget_investment: "Інвестиційний проект успішно видалено."
         topic: "Тему видалено."
+        poll_question_answer_video: "Відеовідповідь видалено."
         valuator_group: "Групу оцінювачів видалено"

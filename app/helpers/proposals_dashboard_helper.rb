@@ -24,15 +24,7 @@ module ProposalsDashboardHelper
   end
 
   def resources_menu_visible?(proposal, resources)
-    if Setting["feature.resources"]
-      can?(:manage_polls, proposal) || resources.any?
-    else
-      false
-    end
-  end
-
-  def community_menu_visible?
-    Setting["feature.community"] == "active"
+    can?(:manage_polls, proposal) || resources.any?
   end
 
   def resources_menu_active?

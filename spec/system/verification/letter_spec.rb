@@ -15,9 +15,10 @@ describe "Verify Letter" do
                                  "we will send it to the address featuring in the data " \
                                  "we have on file."
 
-    visit verification_path
+    user.reload
 
-    expect(page).to have_field "Code you received in letter"
+    expect(user.letter_requested_at).to be
+    expect(user.letter_verification_code).to be
   end
 
   scenario "Deny access unless verified residence" do
@@ -118,18 +119,12 @@ describe "Verify Letter" do
 
       visit edit_letter_path
 
-      5.times do |n|
-        fill_in "Email", with: user.email
-        fill_in "Password", with: user.password
-        fill_in "Code you received in letter", with: "1"
+      6.times do
+        fill_in "verification_letter_email", with: user.email
+        fill_in "verification_letter_password", with: user.password
+        fill_in "verification_letter_verification_code", with: "1"
         click_button "Verify my account"
-
-        expect(page).to have_field "Password", with: ""
-        expect(page).to have_content "Verification code incorrect"
       end
-
-      fill_in "Password", with: user.password
-      click_button "Verify my account"
 
       expect(page).to have_content "You have reached the maximum number of attempts. Please try again later."
       expect(page).to have_current_path(account_path)

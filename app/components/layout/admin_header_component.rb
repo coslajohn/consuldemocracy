@@ -29,8 +29,4 @@ class Layout::AdminHeaderComponent < ApplicationComponent
     def show_account_menu?
       show_admin_menu?(user) || namespace != "management"
     end
-
-    def show_link_to_root_path?
-      !Rails.application.multitenancy_management_mode?
-    end
 end

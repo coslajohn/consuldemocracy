@@ -1,6 +1,5 @@
 class Admin::Stats::BudgetBallotingComponent < ApplicationComponent
   attr_reader :budget
-  use_helpers :include_stat_graphs_javascript
 
   def initialize(budget)
     @budget = budget
@@ -9,7 +8,7 @@ class Admin::Stats::BudgetBallotingComponent < ApplicationComponent
   private
 
     def stats
-      @stats ||= Budget::Stats.new(budget, cache: false)
+      @stats ||= Budget::Stats.new(budget)
     end
 
     def headings_stats

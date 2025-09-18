@@ -8,6 +8,6 @@ class Polls::Questions::ReadMoreComponent < ApplicationComponent
   end
 
   def render?
-    question.options_with_read_more?
+    question.answers_with_read_more?
   end
 end

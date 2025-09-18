@@ -19,24 +19,5 @@ describe SubscriptionsController do
       expect(response).to redirect_to "/"
       expect(flash[:alert]).to eq "No tienes permiso para acceder a esta página."
     end
-
-    it "uses the user locale where there's no locale in the parameters" do
-      create(:user, locale: "es", subscriptions_token: "mytoken")
-
-      get :edit, params: { token: "mytoken" }
-
-      expect(session[:locale]).to eq "es"
-    end
-
-    it "only accepts enabled locales" do
-      Setting["locales.default"] = "fr"
-      Setting["locales.enabled"] = "fr nl"
-
-      create(:user, locale: "es", subscriptions_token: "mytoken")
-
-      get :edit, params: { token: "mytoken" }
-
-      expect(session[:locale]).to eq "fr"
-    end
   end
 end

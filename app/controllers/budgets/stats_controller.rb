@@ -8,7 +8,7 @@ module Budgets
 
     def show
       authorize! :read_stats, @budget
-      @stats = Budget::Stats.new(@budget).tap(&:generate)
+      @stats = Budget::Stats.new(@budget)
       @headings = @budget.headings.sort_by_name
     end
 
