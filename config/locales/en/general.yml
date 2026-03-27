@@ -618,6 +618,7 @@ en:
       already_voted_blank_in_web: "You have already participated in this poll by casting a blank vote. If you vote again it will be overwritten."
       back: Back to voting
       cant_answer_not_logged_in: "You must %{signin} or %{signup} to participate."
+      participate_fully: "You must %{signin} or %{signup} to participate fully."
       comments_tab: Comments
       cant_answer_verify: "You must %{verify_link} in order to answer."
       verify_link: "verify your account"

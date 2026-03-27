@@ -56,7 +56,7 @@ class PollsController < ApplicationController
 
     begin
       if @web_vote.update(vote_data)
-        redirect_to @poll, notice: t("flash.actions.create.poll_voter")
+        redirect_to polls_path, notice: t("flash.actions.create.poll_voter")
       else
         # Standard "update returned false" handling
         render_error_page

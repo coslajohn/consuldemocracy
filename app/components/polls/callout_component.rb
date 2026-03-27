@@ -41,4 +41,10 @@ class Polls::CalloutComponent < ApplicationComponent
       sanitize(t("polls.show.cant_answer_verify",
                  verify_link: link_to(t("polls.show.verify_link"), verification_path)))
     end
+
+    def guest_participation_text
+      sanitize(t("polls.show.participate_fully",
+                  signin: link_to_signin,
+                  signup: link_to_signup))
+    end
 end
