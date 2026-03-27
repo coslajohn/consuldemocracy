@@ -1,0 +1,39 @@
+(function() {
+  console.log("--- START GUEST CHALLENGE DEBUG ---");
+
+  var qId = "<%= @question&.id %>";
+  console.log("Question ID from Ruby: " + qId);
+
+  // Try to find the container using multiple common Consul patterns
+  var selectors = [
+    "#poll_question_" + qId + "_answers",
+    "#question_" + qId + "_answers",
+    ".poll-question-answers[data-question-id='" + qId + "']",
+    "#question_" + qId
+  ];
+
+  var $container = $();
+  for (var i = 0; i < selectors.length; i++) {
+    $container = $(selectors[i]);
+    if ($container.length > 0) {
+      console.log("✅ Found container with selector: " + selectors[i]);
+      break;
+    }
+  }
+
+  if ($container.length > 0) {
+    // Inject the form
+    var formHtml = "<%= j render 'guest_identity_form', poll: @poll, question: @question, answer: @answer %>";
+    $container.html(formHtml);
+    console.log("✅ Form injected successfully.");
+
+    // Scroll to the question
+    $('html, body').animate({ scrollTop: $container.offset().top - 100 }, 500);
+  } else {
+    console.error("❌ ERROR: Could not find any container on the page for Question " + qId);
+    console.log("Available IDs on page starting with 'poll':", $('[id^="poll"]').map(function() { return this.id; }).get());
+    alert("UI Error: Question container not found. See console (F12) for details.");
+  }
+
+  console.log("--- END GUEST CHALLENGE DEBUG ---");
+})();

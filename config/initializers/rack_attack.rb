@@ -19,6 +19,16 @@ class Rack::Attack
     end
   end
 
+  # HARDENING: Shadow Guest Rate Limit (Shared-IP Friendly)
+  # Limit: 5 votes per 24 hours per unique Device+IP combination
+  Rack::Attack.throttle('req/ip/guest_votes', limit: 5, period: 1.day) do |req|
+    if req.post? && req.path.match?(%r{^/polls/[^/]+/answer$})
+      # We combine the IP with the User Agent string to differentiate devices
+      # and then hash it to keep the Memcached key a consistent length.
+      Digest::SHA256.hexdigest("#{req.ip}-#{req.user_agent}")
+    end
+  end
+
   # This allows you to see blocks in your Rails logs
   ActiveSupport::Notifications.subscribe("throttle.rack_attack") do |name, start, finish, request_id, payload|
     req = payload[:request]

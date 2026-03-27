@@ -1,0 +1,49 @@
+<div class="row">
+  <div class="small-12 medium-8 column centered">
+
+    <%# 1. ADD THIS: Flash Error Display %>
+    <% if flash[:error] || flash[:alert] %>
+      <div class="callout alert" data-closable>
+        <p><i class="fa fa-exclamation-triangle"></i> <%= flash[:error] || flash[:alert] %></p>
+        <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <% end %>
+
+    <h2><%= t("polls.final_step") %></h2>
+    <p><%= t("polls.guest_verification_intro") %></p>
+
+    <div class="callout secondary">
+      <h5><%= t("polls.your_selections") %></h5>
+      <ul>
+        <li>Ready to submit for: <strong><%= @poll.name %></strong></li>
+      </ul>
+    </div>
+
+    <%= form_tag answer_poll_path(@poll), method: :post do %>
+      <%# Identity Fields %>
+      <div class="row">
+        <div class="small-12 medium-4 columns">
+          <%= label_tag :guest_initials, t("polls.initials") %>
+          <%# 2. UPDATED: Pass params back so they don't have to re-type %>
+          <%= text_field_tag :guest_initials, params[:guest_initials], required: true, placeholder: "JD", maxlength: 3 %>
+        </div>
+        <div class="small-12 medium-8 columns">
+          <%= label_tag :guest_postal_code, t("polls.postcode") %>
+          <%# 2. UPDATED: Pass params back so they don't have to re-type %>
+          <%= text_field_tag :guest_postal_code, params[:guest_postal_code], required: true, placeholder: "SW1A 1AA" %>
+        </div>
+      </div>
+
+      <%= label_tag :guest_year_of_birth, t("polls.year_of_birth") %>
+      <%# 2. UPDATED: Keep the selected year if page reloads %>
+      <%= select_tag :guest_year_of_birth, options_for_select((1920..2010).to_a.reverse, params[:guest_year_of_birth]), required: true, include_blank: true %>
+
+      <div class="padding">
+        <%= submit_tag t("polls.submit_and_continue"), class: "button success expanded" %>
+        <%= link_to t("polls.go_back_to_vote"), @poll, class: "button hollow expanded" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -578,6 +578,15 @@ en:
   polls:
     dates: "From %{open_at} to %{closed_at}"
     final_date: "Final recounts/Results"
+    submit_and_continue: "Confirm and Submit Vote"
+    go_back_to_vote: "Go back to selections"
+    final_step: "Final Step: Verify Identity"
+    guest_verification_intro: "To ensure a fair process, please provide your initials, postcode, and year of birth."
+    initials: "Initials"
+    postcode: "Postcode"
+    year_of_birth: "Year of Birth"
+    guest_verification:
+    no_pending_vote: "No pending vote found. Please select your options again."
     form:
       vote: "Vote"
       maximum_exceeded: "you've selected %{given} answers, but the maximum you can select is %{maximum}"

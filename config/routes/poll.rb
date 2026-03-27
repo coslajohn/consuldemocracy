@@ -3,5 +3,6 @@ resources :polls, only: [:show, :index] do
     get :stats
     get :results
     post :answer
+    get :guest_verification
   end
 end

@@ -17,6 +17,8 @@ class Poll
     validates :document_number, presence: true, unless: :skip_user_verification?
     validates :origin, inclusion: { in: ->(*) { VALID_ORIGINS }}
 
+    validate :check_guest_uniqueness, if: -> { document_type == "guest_id" || user&.document_type == "guest_id" }
+
     before_validation :set_demographic_info, :set_document_info, :set_denormalized_booth_assignment_id
 
     scope :web,    -> { where(origin: "web") }
@@ -43,6 +45,22 @@ class Poll
     end
 
     private
+
+      def check_guest_uniqueness
+        # Extract initials and postcode from the current document_number
+        # e.g., "JMSW12AA153348"
+        signature_prefix = document_number.to_s[0..-7] # Strips the 6-digit timestamp
+
+        duplicate = Poll::Voter.joins(:user)
+                               .where(poll_id: poll_id)
+                               .where("poll_voters.document_number LIKE ?", "#{signature_prefix}%")
+                               .where("EXTRACT(YEAR FROM users.date_of_birth) = ?", user.date_of_birth.year)
+                               .exists?
+
+        if duplicate
+          errors.add(:base, "This identity has already cast a vote in this poll.")
+        end
+      end
 
       def set_denormalized_booth_assignment_id
         self.booth_assignment_id ||= officer_assignment&.booth_assignment_id

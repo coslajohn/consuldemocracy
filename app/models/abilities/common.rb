@@ -86,10 +86,12 @@ module Abilities
       end
 
       if user.guest?
-        # 1. Allow voting in polls (The "Lazy" guest goal)
+        # 1. Allow voting in polls
         can :answer, Poll do |poll|
           poll.answerable_by?(user)
         end
+
+        can [:guest_verification], Poll
 
         # 2. Add other "Stage 1" guest abilities here if desired
         # e.g., can :create, Comment if you want guests to comment
