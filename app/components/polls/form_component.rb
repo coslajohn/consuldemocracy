@@ -13,6 +13,9 @@ class Polls::FormComponent < ApplicationComponent
     end
 
     def disabled?
-      cannot?(:answer, poll) || poll.voted_in_booth?(current_user)
+      # Extract the user straight from the WebVote object!
+      voter = web_vote.user || User.new(guest: true)
+
+      !poll.answerable_by?(voter) || (voter.persisted? && poll.voted_in_booth?(voter))
     end
 end

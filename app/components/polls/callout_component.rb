@@ -1,23 +1,31 @@
 class Polls::CalloutComponent < ApplicationComponent
-  attr_reader :poll
+  attr_reader :poll, :user
+
+  # We removed the generic user delegation; we pass it in directly now!
   delegate :link_to_signin, :link_to_signup, to: :helpers
 
-  def initialize(poll)
+  def initialize(poll, user = nil)
     @poll = poll
+    @user = user
+  end
+
+  def guest_can_answer?
+    voter = user || User.new(guest: true)
+    poll.answerable_by?(voter)
   end
 
   private
 
     def voted_in_booth?
-      poll.voted_in_booth?(current_user)
+      user.present? && poll.voted_in_booth?(user)
     end
 
     def voted_in_web?
-      poll.voted_in_web?(current_user)
+      user.present? && poll.voted_in_web?(user)
     end
 
     def voted_blank?
-      poll.answers.where(author: current_user).none?
+      user.present? && poll.answers.where(author: user).none?
     end
 
     def callout(text, html_class: "warning")

@@ -16,7 +16,7 @@
 
   <div class="row margin">
     <div class="small-12 medium-9 column">
-      <%= render Polls::CalloutComponent.new(@poll) %>
+      <%= render Polls::CalloutComponent.new(@poll, current_or_guest_user) %>
       <%= render Polls::FormComponent.new(@web_vote) %>
     </div>
   </div>

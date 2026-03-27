@@ -133,6 +133,7 @@ class Poll < ApplicationRecord
   end
 
   def answerable_by?(user)
+    return true if user.guest? && !expired?
     user.present? &&
       user.level_two_or_three_verified? &&
       current? &&

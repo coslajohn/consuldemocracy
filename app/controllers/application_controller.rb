@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   include HasFilters
   include HasOrders
   include AccessDeniedHandler
+  include GuestSessionHandler
 
   default_form_builder ConsulFormBuilder
 
@@ -21,6 +22,13 @@ class ApplicationController < ActionController::Base
   helper_method :current_budget
 
   private
+
+    # Overriding the CanCanCan default hook
+    def current_ability
+      # Use our hybrid method so permissions are checked against
+      # either the logged-in user OR the lazy-created guest.
+      @current_ability ||= Ability.new(current_or_guest_user)
+    end
 
     def authenticate_http_basic
       authenticate_or_request_with_http_basic do |username, password|

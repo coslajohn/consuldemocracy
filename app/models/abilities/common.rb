@@ -85,6 +85,16 @@ module Abilities
         can [:create, :destroy], ActsAsVotable::Vote, voter_id: user.id, votable_type: "Comment"
       end
 
+      if user.guest?
+        # 1. Allow voting in polls (The "Lazy" guest goal)
+        can :answer, Poll do |poll|
+          poll.answerable_by?(user)
+        end
+
+        # 2. Add other "Stage 1" guest abilities here if desired
+        # e.g., can :create, Comment if you want guests to comment
+      end
+
       if user.level_two_or_three_verified?
         can :vote, Proposal, &:published?
 
