@@ -24,6 +24,7 @@ class Setting
       else
         consul_defaults.merge({
           # Overwrite default CONSUL DEMOCRACY settings or add new settings here
+          "feature.allow_guest_users":false
         })
       end
     end

@@ -28,6 +28,7 @@ class Admin::Settings::FeaturesTabComponent < ApplicationComponent
       feature.remove_investments_supports
       feature.gdpr.require_consent_for_notifications
       feature.dashboard.notification_emails
+      feature.allow_guest_users
     ]
   end
 end
