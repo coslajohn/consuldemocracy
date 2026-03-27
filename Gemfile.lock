@@ -555,6 +555,8 @@ GEM
     rack (2.2.22)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-attack (6.8.0)
+      rack (>= 1.0, < 4)
     rack-oauth2 (2.2.1)
       activesupport
       attr_required
@@ -929,6 +931,7 @@ DEPENDENCIES
   pronto-rubocop (~> 0.11.6)
   pronto-stylelint (~> 0.11.1)
   puma (~> 6.6.1)
+  rack-attack (~> 6.8)
   rails (~> 7.2.3)
   recipient_interceptor (~> 0.3.3)
   redcarpet (~> 3.6.1)
