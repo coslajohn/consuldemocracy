@@ -28,5 +28,8 @@ class Setting
         })
       end
     end
+    def allow_guests?
+      Setting["feature.allow_guest_users"].present?
+    end
   end
 end

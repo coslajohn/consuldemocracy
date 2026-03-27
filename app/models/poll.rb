@@ -133,16 +133,24 @@ class Poll < ApplicationRecord
   end
 
   def answerable_by?(user)
-    return true if user.guest? && !expired?
-    user.present? &&
-      user.level_two_or_three_verified? &&
+    return false if user.nil?
+
+    # For guests: Only allow them if the setting is ON, the poll is active, AND it's not restricted
+    if user.guest?
+      return Setting.allow_guests? && !expired? && !geozone_restricted?
+    end
+
+    # Standard Consul logic for registered users
+    user.level_two_or_three_verified? &&
       current? &&
       (!geozone_restricted || geozone_ids.include?(user.geozone_id))
   end
 
   def self.answerable_by(user)
-    return none if user.nil? || user.unverified?
+    return none if user.nil?
 
+    return none if user.unverified?
+                       .
     current.left_joins(:geozones)
            .where("geozone_restricted = ? OR geozones.id = ?", false, user.geozone_id)
   end

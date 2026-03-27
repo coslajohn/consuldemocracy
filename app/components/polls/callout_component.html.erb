@@ -20,7 +20,7 @@
   <% end %>
 
 <% else %>
-  <% if user.nil? %>
+  <% if user.nil? || user.guest? %>
     <%= callout(not_logged_in_text, html_class: "primary") %>
   <% elsif user.unverified? %>
     <%= callout(unverified_text) %>

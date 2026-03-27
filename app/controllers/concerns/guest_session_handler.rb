@@ -24,6 +24,11 @@ module GuestSessionHandler
   def ensure_guest_user!
     return current_or_guest_user if current_or_guest_user
 
+    unless Setting.allow_guests?
+      authenticate_user!
+      return current_user
+    end
+
     new_guest = User.new(
       guest: true,
       username: "guest_#{SecureRandom.hex(3)}",

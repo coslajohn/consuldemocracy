@@ -1,7 +1,6 @@
 class Polls::CalloutComponent < ApplicationComponent
   attr_reader :poll, :user
 
-  # We removed the generic user delegation; we pass it in directly now!
   delegate :link_to_signin, :link_to_signup, to: :helpers
 
   def initialize(poll, user = nil)
