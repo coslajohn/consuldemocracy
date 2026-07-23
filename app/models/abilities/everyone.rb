@@ -3,7 +3,8 @@ module Abilities
     include CanCan::Ability
 
     def initialize(user)
-      can [:read, :map], Debate
+      public_debate_ids = Debate.public_or_for_user_segments([]).select(:id)
+      can [:read, :map], Debate, id: public_debate_ids
       can [:read, :map, :summary, :share], Proposal
       can :read, Comment
       can :read, Poll

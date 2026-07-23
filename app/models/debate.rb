@@ -11,6 +11,7 @@ class Debate < ApplicationRecord
   include Notifiable
   include Randomizable
   include SDG::Relatable
+  include Segmentable
 
   acts_as_votable
   acts_as_paranoid column: :hidden_at

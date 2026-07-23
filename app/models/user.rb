@@ -82,6 +82,8 @@ class User < ApplicationRecord
            inverse_of: :author
   has_many :related_contents, foreign_key: :author_id, inverse_of: :author, dependent: nil
   has_many :topics, foreign_key: :author_id, inverse_of: :author
+  has_many :user_segments, dependent: :destroy
+  has_many :segments, through: :user_segments
   belongs_to :geozone
 
   validates :username, presence: true, if: :username_required?

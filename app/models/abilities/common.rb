@@ -5,9 +5,12 @@ module Abilities
     def initialize(user)
       merge Abilities::Everyone.new(user)
 
+      user_segment_ids = user.segment_ids
+      visible_debate_ids = Debate.public_or_for_user_segments(user_segment_ids).select(:id)
+
       can [:read, :update], User, id: user.id
 
-      can :read, Debate
+      can :read, Debate, id: visible_debate_ids
       can :update, Debate do |debate|
         debate.editable_by?(user)
       end

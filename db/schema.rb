@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_23_104610) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -437,6 +437,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
     t.integer "confidence_score", default: 0, null: false
     t.boolean "valuation", default: false
     t.tsvector "tsv"
+    t.jsonb "ai_moderation_meta", default: {}
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["cached_votes_down"], name: "index_comments_on_cached_votes_down"
     t.index ["cached_votes_total"], name: "index_comments_on_cached_votes_total"
@@ -582,6 +583,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
     t.index ["documentable_type", "documentable_id"], name: "index_documents_on_documentable_type_and_documentable_id"
     t.index ["user_id", "documentable_type", "documentable_id"], name: "access_documents"
     t.index ["user_id"], name: "index_documents_on_user_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "location"
+    t.string "event_type"
+    t.bigint "author_id"
+    t.index ["author_id"], name: "index_events_on_author_id"
   end
 
   create_table "failed_census_calls", id: :serial, force: :cascade do |t|
@@ -917,6 +931,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
     t.bigint "user_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.boolean "dry_run"
+    t.integer "duration"
+    t.integer "total_tokens"
+    t.jsonb "config", default: {}
+    t.integer "records_processed"
     t.index ["user_id"], name: "index_machine_learning_jobs_on_user_id"
   end
 
@@ -971,6 +990,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
     t.text "body"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.jsonb "sentiment_analysis"
   end
 
   create_table "moderators", id: :serial, force: :cascade do |t|
@@ -1440,6 +1460,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
     t.index ["goal_id"], name: "index_sdg_targets_on_goal_id"
   end
 
+  create_table "segmentations", force: :cascade do |t|
+    t.bigint "segment_id", null: false
+    t.string "segmentable_type", null: false
+    t.bigint "segmentable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["segment_id", "segmentable_id", "segmentable_type"], name: "index_segmentations_on_unique_polymorphic", unique: true
+    t.index ["segment_id"], name: "index_segmentations_on_segment_id"
+    t.index ["segmentable_type", "segmentable_id"], name: "index_segmentations_on_segmentable"
+  end
+
+  create_table "segments", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_segments_on_name", unique: true
+  end
+
   create_table "settings", id: :serial, force: :cascade do |t|
     t.string "key"
     t.string "value"
@@ -1569,6 +1608,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
     t.index ["hidden_at"], name: "index_topics_on_hidden_at"
   end
 
+  create_table "user_segments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "segment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["segment_id"], name: "index_user_segments_on_segment_id"
+    t.index ["user_id", "segment_id"], name: "index_user_segments_on_user_id_and_segment_id", unique: true
+    t.index ["user_id"], name: "index_user_segments_on_user_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "email", default: ""
     t.string "encrypted_password", default: "", null: false
@@ -1631,12 +1680,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
     t.integer "failed_attempts", default: 0, null: false
     t.datetime "locked_at", precision: nil
     t.string "unlock_token"
+    t.string "otp_secret"
+    t.integer "consumed_timestep"
+    t.boolean "otp_required_for_login"
+    t.text "otp_backup_codes"
+    t.boolean "guest", default: false
+    t.string "ip_address"
+    t.string "fingerprint"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["date_of_birth"], name: "index_users_on_date_of_birth"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["fingerprint"], name: "index_users_on_fingerprint"
     t.index ["gender"], name: "index_users_on_gender"
     t.index ["geozone_id"], name: "index_users_on_geozone_id"
+    t.index ["guest"], name: "index_users_on_guest"
     t.index ["hidden_at"], name: "index_users_on_hidden_at"
+    t.index ["ip_address", "created_at"], name: "index_users_on_ip_address_and_created_at"
     t.index ["password_changed_at"], name: "index_users_on_password_changed_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
@@ -1780,6 +1839,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
   add_foreign_key "dashboard_executed_actions", "dashboard_actions", column: "action_id"
   add_foreign_key "dashboard_executed_actions", "proposals"
   add_foreign_key "documents", "users"
+  add_foreign_key "events", "users", column: "author_id"
   add_foreign_key "failed_census_calls", "poll_officers"
   add_foreign_key "failed_census_calls", "users"
   add_foreign_key "flags", "users"
@@ -1818,6 +1878,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_085528) do
   add_foreign_key "related_content_scores", "related_contents"
   add_foreign_key "related_content_scores", "users"
   add_foreign_key "sdg_managers", "users"
+  add_foreign_key "segmentations", "segments"
+  add_foreign_key "user_segments", "segments"
+  add_foreign_key "user_segments", "users"
   add_foreign_key "users", "geozones"
   add_foreign_key "valuators", "users"
 end
