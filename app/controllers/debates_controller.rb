@@ -15,8 +15,22 @@ class DebatesController < ApplicationController
   has_orders %w[most_voted newest oldest], only: :show
 
   load_and_authorize_resource
+
+  before_action :apply_segment_visibility, only: :index
+
   helper_method :resource_model, :resource_name
   respond_to :html, :js
+
+  def index
+    # 1. Force our segment scope and apply Kaminari pagination
+    user_segment_ids = current_user&.segment_ids || []
+
+    @debates = @debates.public_or_for_user_segments(user_segment_ids)
+                       .page(params[:page])
+
+    # 2. Tell Consul to build the Tag Cloud using our secure collection
+    @tag_cloud = TagCloud.new(resource_model, params[:search])
+  end
 
   def create
     @debate = Debate.new(debate_params)
@@ -70,9 +84,19 @@ class DebatesController < ApplicationController
       Debate
     end
 
-    def debates_recommendations
-      if Setting["feature.user.recommendations_on_debates"] && current_user.recommended_debates
-        @recommended_debates = Debate.recommendations(current_user).sort_by_random.limit(3)
-      end
+  def apply_segment_visibility
+    user_segment_ids = current_user&.segment_ids || []
+    @debates = @debates.public_or_for_user_segments(user_segment_ids)
+  end
+
+  def debates_recommendations
+    if Setting["feature.user.recommendations_on_debates"] && current_user&.recommended_debates
+      user_segment_ids = current_user.segment_ids
+
+      @recommended_debates = Debate.public_or_for_user_segments(user_segment_ids)
+                                   .recommendations(current_user)
+                                   .sort_by_random
+                                   .limit(3)
     end
+  end
 end
