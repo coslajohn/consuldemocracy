@@ -1,0 +1,20 @@
+<table class="table-list">
+  <thead>
+  <tr>
+    <th><%= t("admin.segments.index.name") %></th>
+    <th><%= t("admin.segments.index.description") %></th>
+    <th class="text-right"><%= t("admin.actions.actions") %></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% segments.each do |segment| %>
+    <tr>
+      <td><strong><%= segment.name %></strong></td>
+      <td><%= segment.description %></td>
+      <td class="text-right">
+        <%= render Admin::TableActionsComponent.new(segment) %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

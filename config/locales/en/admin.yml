@@ -764,6 +764,7 @@ en:
       poll_shifts: Shifts Assignments
       officials: Officials
       organizations: Organisations
+      segments: Segments
       settings: Global settings
       stats: Statistics
       signature_sheets: Signature Sheets
@@ -1438,6 +1439,25 @@ en:
         error: This geozone can't be deleted since there are elements attached to it
       update:
         notice: "Geozone updated successfully"
+    segments:
+      index:
+        title: "Segments"
+        create: "Create segment"
+        name: "Name"
+        description: "Description"
+        empty: "There are no segments created yet."
+      new:
+        title: "Create Segment"
+        go_back: "Back to segments"
+      edit:
+        title: "Edit Segment"
+        go_back: "Back to segments"
+      create:
+        notice: "Segment created successfully"
+      update:
+        notice: "Segment updated successfully"
+      destroy:
+        notice: "Segment deleted successfully"
     signature_sheets:
       author: Author
       created_at: Creation date

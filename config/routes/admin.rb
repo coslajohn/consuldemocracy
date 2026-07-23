@@ -1,6 +1,8 @@
 namespace :admin do
   root to: "dashboard#index"
 
+  resources :segments, except: [:show]
+
   resources :administrators, only: [:index, :create, :destroy, :edit, :update] do
     get :search, on: :collection
   end

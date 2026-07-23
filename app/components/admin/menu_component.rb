@@ -65,7 +65,7 @@ class Admin::MenuComponent < ApplicationComponent
     end
 
     def settings?
-      controllers_names = %w[settings tenants tags locales geozones local_census_records imports]
+      controllers_names = %w[settings tenants tags locales segments geozones local_census_records imports]
       controllers_names.include?(controller_name)
     end
 
@@ -475,6 +475,7 @@ class Admin::MenuComponent < ApplicationComponent
           tenants_link,
           tags_link,
           (locales_link if I18n.available_locales.many?),
+          segments_link,
           geozones_link,
           local_census_records_link
         )
@@ -572,6 +573,17 @@ class Admin::MenuComponent < ApplicationComponent
         admin_dashboard_administrator_tasks_path,
         controller_name == "administrator_tasks"
       ]
+    end
+
+  def segments_link
+    if can?(:manage, Segment)
+      [
+        t("admin.menu.segments"),
+        admin_segments_path,
+        controller_name == "segments",
+        class: "segments-link"
+      ]
+    end
     end
 
     def dashboard_actions_link

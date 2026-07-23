@@ -1,0 +1,21 @@
+<%= form_for [:admin, segment] do |f| %>
+  <%= render "shared/errors", resource: segment %>
+
+  <div class="row">
+    <div class="small-12 medium-6 column">
+      <%= f.text_field :name %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="small-12 column">
+      <%= f.text_area :description, rows: 4 %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="small-12 column">
+      <%= f.submit class: "button success" %>
+    </div>
+  </div>
+<% end %>

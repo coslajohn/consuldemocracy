@@ -1,0 +1,4 @@
+<%= link_to t("admin.segments.edit.go_back"), admin_segments_path, class: "button hollow" %>
+<h2><%= t("admin.segments.edit.title") %></h2>
+
+<%= render Admin::Segments::FormComponent.new(segment: @segment) %>

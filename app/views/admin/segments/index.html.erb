@@ -1,0 +1,11 @@
+<h2><%= t("admin.segments.index.title") %></h2>
+
+<%= link_to t("admin.segments.index.create"), new_admin_segment_path, class: "button float-right" %>
+
+<% if @segments.any? %>
+  <%= render Admin::Segments::ListComponent.new(segments: @segments) %>
+<% else %>
+  <div class="callout primary">
+    <%= t("admin.segments.index.empty") %>
+  </div>
+<% end %>
