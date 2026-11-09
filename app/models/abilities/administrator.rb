@@ -62,7 +62,7 @@ module Abilities
       can [:search, :show, :update, :create, :index, :destroy], ::Valuator
       can [:search, :create, :index, :destroy], ::Manager
       can [:create, :read, :destroy], ::SDG::Manager
-      can [:index], ::User
+      can [:index, :edit, :update], ::User
 
       can :manage, Dashboard::Action
 

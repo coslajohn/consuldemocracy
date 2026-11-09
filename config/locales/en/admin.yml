@@ -1592,6 +1592,7 @@ en:
         roles: Roles
         verification_level: Verification level
         activation_status: Activation Status
+        segments: Segments
       account:
         active_status: Account activated
         inactive_status: Account not activated
@@ -1602,6 +1603,12 @@ en:
         filters:
           active: Active
           erased: Erased
+      edit:
+        title: "Manage User: %{user}"
+        go_back: "Back to users"
+        segments: "Assign Segments"
+      update:
+        notice: "User updated successfully"
       search:
         placeholder: Search user by email, name or document number
     verifications:

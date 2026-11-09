@@ -1,0 +1,32 @@
+<%= link_to t("admin.users.edit.go_back"), admin_users_path, class: "button hollow" %>
+
+<h2><%= t("admin.users.edit.title", user: @user.name) %></h2>
+
+<%= form_for [:admin, @user] do |f| %>
+  <%= render "shared/errors", resource: @user %>
+
+  <div class="row">
+    <div class="small-12 medium-6 column">
+      <fieldset class="fieldset">
+        <legend><strong><%= t("admin.users.edit.segments") %></strong></legend>
+
+        <% if Segment.any? %>
+          <%= f.collection_check_boxes :segment_ids, Segment.order(:name), :id, :name do |b| %>
+            <div class="checkbox-container margin-bottom">
+              <%= b.check_box %>
+              <%= b.label(class: "margin-left") %>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="help-text"><%= t("admin.segments.index.empty") %></p>
+        <% end %>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="small-12 column">
+      <%= f.submit t("shared.save"), class: "button success" %>
+    </div>
+  </div>
+<% end %>

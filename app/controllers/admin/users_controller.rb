@@ -12,4 +12,21 @@ class Admin::UsersController < Admin::BaseController
       format.js
     end
   end
+
+  def edit
+  end
+
+  def update
+    if @user.update(user_params)
+      redirect_to admin_users_path(search: @user.email), notice: t("admin.users.update.notice")
+    else
+      render :edit
+    end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(segment_ids: [])
+  end
 end

@@ -163,7 +163,9 @@ namespace :admin do
       resources :managers, only: [:index, :create, :destroy]
     end
 
-    resources :users, only: :index
+
+    resources :users, only: [:index, :edit, :update]
+
 
     scope module: :poll do
       resources :polls do
