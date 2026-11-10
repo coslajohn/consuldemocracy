@@ -1,0 +1,32 @@
+<%= link_to t("admin.debates.edit.go_back"), admin_debates_path, class: "button hollow" %>
+
+<h2><%= t("admin.debates.edit.title", debate: @debate.title) %></h2>
+
+<%= form_for [:admin, @debate] do |f| %>
+  <%= render "shared/errors", resource: @debate %>
+
+  <div class="row">
+    <div class="small-12 medium-6 column">
+      <fieldset class="fieldset">
+        <legend><strong><%= t("admin.debates.edit.segments") %></strong></legend>
+
+        <% if Segment.any? %>
+          <%= f.collection_check_boxes :segment_ids, Segment.order(:name), :id, :name do |b| %>
+            <div class="checkbox-container margin-bottom">
+              <%= b.check_box %>
+              <%= b.label(class: "margin-left") %>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="help-text"><%= t("admin.segments.index.empty") %></p>
+        <% end %>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="small-12 column">
+      <%= f.submit t("shared.save"), class: "button success" %>
+    </div>
+  </div>
+<% end %>

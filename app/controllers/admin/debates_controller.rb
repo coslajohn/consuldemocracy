@@ -3,6 +3,8 @@ class Admin::DebatesController < Admin::BaseController
   include HasOrders
   include Search
 
+  load_and_authorize_resource
+
   feature_flag :debates
 
   has_orders %w[created_at]
@@ -22,6 +24,22 @@ class Admin::DebatesController < Admin::BaseController
   end
 
   def show
-    @debate = Debate.find(params[:id])
+  end
+
+  def edit
+  end
+
+  def update
+    if @debate.update(debate_params)
+      redirect_to admin_debates_path, notice: t("admin.debates.update.notice")
+    else
+      render :edit
+    end
+  end
+
+  private
+
+  def debate_params
+    params.require(:debate).permit(segment_ids: [])
   end
 end

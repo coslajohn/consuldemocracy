@@ -10,21 +10,27 @@
 
   <table>
     <thead>
-      <tr>
-        <th class="text-center"><%= t("admin.debates.index.id") %></th>
-        <th><%= Debate.human_attribute_name(:title) %></th>
-        <th><%= t("admin.debates.index.author") %></th>
-      </tr>
+    <tr>
+      <th class="text-center"><%= t("admin.debates.index.id") %></th>
+      <th><%= Debate.human_attribute_name(:title) %></th>
+      <th><%= t("admin.debates.index.author") %></th>
+      <th><%= t("admin.debates.index.segments") %></th>
+      <th class="text-right"><%= t("admin.actions.actions") %></th>
+    </tr>
     </thead>
 
     <tbody>
-      <% debates.each do |debate| %>
-        <tr id="<%= dom_id(debate) %>" class="debates">
-          <td class="text-center"><%= debate.id %></td>
-          <td><%= link_to debate.title, admin_debate_path(debate) %></td>
-          <td><%= debate.author.username %></td>
-        </tr>
-      <% end %>
+    <% debates.each do |debate| %>
+      <tr id="<%= dom_id(debate) %>" class="debates">
+        <td class="text-center"><%= debate.id %></td>
+        <td><%= link_to debate.title, admin_debate_path(debate) %></td>
+        <td><%= debate.author.username %></td>
+        <td><%= debate.segments.map(&:name).join(", ").presence || "-" %></td>
+        <td class="text-right">
+          <%= render Admin::TableActionsComponent.new(debate, actions: [:edit]) %>
+        </td>
+      </tr>
+    <% end %>
     </tbody>
   </table>
 

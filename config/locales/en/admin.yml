@@ -523,6 +523,13 @@ en:
         author: Author
         title: Debates
         no_debates: There are no debates.
+        segments: Segments
+      edit:
+        title: "Manage Segments for: %{debate}"
+        go_back: "Back to debates"
+        segments: "Assign Segments"
+      update:
+        notice: "Debate segments updated successfully"
     hidden_debates:
       index:
         filter: Filter
