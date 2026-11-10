@@ -44,7 +44,17 @@ module Abilities
       can :read, Legislation::Proposal
       can [:retire_form, :retire], Legislation::Proposal, author_id: user.id
 
-      can :create, Comment
+      can :create, Comment do |comment|
+        target = comment.commentable
+
+        if !target.respond_to?(:segments)
+          true
+        else
+          target.segments.empty? ||
+            target.author_id == user.id ||
+            (target.segment_ids & user.segment_ids).any?
+        end
+      end
       can :create, Debate
       can [:create, :created], Proposal
       can :create, Legislation::Proposal
