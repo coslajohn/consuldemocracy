@@ -1,5 +1,6 @@
 <div class="detailed-info">
   <%= render Shared::DetailedAuthorInfoComponent.new(record.author) %>
+  <%= render Shared::SegmentInfoComponent.new(record) %>
   <%= date %>
   <%= render Shared::CommentsCountComponent.new(record.comments_count, url: comments_path) %>
 
